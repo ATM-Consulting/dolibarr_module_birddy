@@ -15,3 +15,48 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#birddychat {
+	position:fixed;
+	bottom:0;
+	right:10px;
+	width:270px;
+	height:250px;
+	padding:8px 10px 5px 10px;
+	background:#F1F1F1;
+	border-radius:10px 10px 0 0;
+	border:1px solid #ddd;
+}
+
+#birddylog {
+	margin-top:2px;
+	background:#FFF;
+	border:1px solid #ddd;
+	height:80%;
+}
+
+#birddyactionbar {
+	margin-top: 2px;
+}
+
+#birddydata {
+	width:260px;
+	border-radius:0;
+	border:1px solid #ddd;
+}
+
+#birddystatus {
+	display:block;
+    height:12px;
+    width:12px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+#birddystatus.offline {
+	background:red;
+}
+
+#birddystatus.online {
+	background:#4cd450;
+}

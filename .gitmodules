@@ -1,0 +1,6 @@
+[submodule "ratchet"]
+	path = ratchet
+	url = https://github.com/ratchetphp/Ratchet.git
+[submodule "phpwebsocket"]
+	path = phpwebsocket
+	url = https://github.com/nekudo/php-websocket.git

@@ -1,3 +1,4 @@
+<?php
 /* <one line to give the program's name and a brief idea of what it does.>
  * Copyright (C) 2016 ATM Consulting <support@atm-consulting.fr>
  * Copyright (C) 2016 Pierre-Henry Favre <phf@atm-consulting.fr>
@@ -15,3 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+ ?>
+ 
+<div id="birddychat">
+	<span id="birddystatus" class="offline"></span>
+	
+    <div id="birddylog"></div>
+    
+	
+	<div id="birddyactionbar">
+		<input id="birddyaction" placeholder="action" type="hidden" value="echo" />
+	    <input id="birddydata" placeholder="text..." type="text" />
+	    <!-- <input id="birddysend" type="button" value="Send" /> -->
+	</div>
+	
+	
+	<!--
+	<h2>Send Binary Frame</h2>
+	<form name="binaryFrame" action="#">
+		<input type="file" name="file" id="file">
+		<button id="sendfile">Send Binary</button>
+	</form>
+	-->
+</div>
