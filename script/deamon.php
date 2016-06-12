@@ -17,14 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-if (isset($_GET['DEBUG']))
-{
+//if (isset($_GET['DEBUG']))
+//{
 	ini_set('display_errors', 1);
 	error_reporting(E_ALL);	
-}
+//}
 
 DEFINE('INC_FROM_CRON_SCRIPT', true);
-//chdir(dirname(__FILE__));
 require '../config.php';
 
 if (empty($conf->global->BIRDDY_SERVER_ADDR) || empty($conf->global->BIRDDY_PORT))
@@ -34,9 +33,10 @@ if (empty($conf->global->BIRDDY_SERVER_ADDR) || empty($conf->global->BIRDDY_PORT
 }
 
 dol_include_once('/birddy/phpwebsocket/server/lib/SplClassLoader.php');
-
 $classLoader = new SplClassLoader('WebSocket', __DIR__ . '/../phpwebsocket/server/lib');
 $classLoader->register();
+
+dol_include_once('/birddy/class/birddy.class.php');
 
 $server = new \WebSocket\Server($conf->global->BIRDDY_SERVER_ADDR, $conf->global->BIRDDY_PORT, false);
 
@@ -49,6 +49,7 @@ $server->setMaxRequestsPerMinute(2000);
 
 // Hint: Status application should not be removed as it displays usefull server informations:
 //$server->registerApplication('status', \WebSocket\Application\StatusApplication::getInstance());
-$server->registerApplication('demo', \WebSocket\Application\DemoApplication::getInstance());
+//$server->registerApplication('birddy', \WebSocket\Application\DemoApplication::getInstance());
+$server->registerApplication('birddy', Birddy::getInstance());
 
 $server->run();

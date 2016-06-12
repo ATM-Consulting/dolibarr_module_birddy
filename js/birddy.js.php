@@ -24,6 +24,7 @@ if (empty($conf->global->BIRDDY_SERVER_ADDR) || empty($conf->global->BIRDDY_PORT
 {
 	exit;
 }
+$langs->load('birddy@birddy');
 
 ?>
  
@@ -42,7 +43,7 @@ $(function() {
 			return $('#birddylog').append("" + msg + "<br />");
 		};
 		// TODO replace server url 
-		birddyServerUrl = 'ws://<?php echo $conf->global->BIRDDY_SERVER_ADDR.':'.$conf->global->BIRDDY_PORT; ?>/demo';
+		birddyServerUrl = 'ws://<?php echo $conf->global->BIRDDY_SERVER_ADDR.':'.$conf->global->BIRDDY_PORT; ?>/birddy';
 		
 		try {
 			if (window.MozWebSocket) {
@@ -60,11 +61,11 @@ $(function() {
 		birddySocket.onopen = function(msg) {
 			return $('#birddystatus').removeClass('offline').addClass('online').attr('title', 'connected');
 		};
-		birddySocket.onmessage = function(msg) {
-			var response;
-			response = JSON.parse(msg.data);
-			//birddylog("Action: " + response.action);
-			return birddylog("Data: " + response.data);
+		birddySocket.onmessage = function(response) {
+			//console.log(response);
+			var data = JSON.parse(response.data);
+			birddylog('<b>'+data.username+'</b>');
+			return birddylog("<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg);
 		};
 		birddySocket.onclose = function(msg) {
 			return $('#birddystatus').removeClass('online').addClass('offline').attr('title', 'disconnected');
@@ -81,7 +82,8 @@ $(function() {
 				var payload;
 				payload = new Object();
 				payload.action = $('#birddyaction').val();
-				payload.data = $('#birddydata').val();
+				payload.msg = $('#birddydata').val();
+				payload.username = '<?php echo $user->firstname.' '.$user->lastname; ?>';
 				$('#birddydata').val('');
 				return birddySocket.send(JSON.stringify(payload));
 			}

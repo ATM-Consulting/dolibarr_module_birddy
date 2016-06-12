@@ -5,3 +5,6 @@ ATMAbout = This module has been developed by <a href="http://www.atm-consulting.
 
 birddySetup = birddy module setup
 birddyAbout = About birddy
+
+
+birddy_say=say:
