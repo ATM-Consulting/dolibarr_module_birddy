@@ -38,7 +38,7 @@ dol_include_once('/birddy/phpwebsocket/server/lib/SplClassLoader.php');
 $classLoader = new SplClassLoader('WebSocket', __DIR__ . '/../phpwebsocket/server/lib');
 $classLoader->register();
 
-$server = new \WebSocket\Server($conf->global->BIRDDY_IP_SERVER, $conf->global->BIRDDY_PORT, false);
+$server = new \WebSocket\Server($conf->global->BIRDDY_SERVER_ADDR, $conf->global->BIRDDY_PORT, false);
 
 // TODO server settings: mettre les valeurs en conf
 $server->setMaxClients(100);
