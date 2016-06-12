@@ -27,12 +27,18 @@ DEFINE('INC_FROM_CRON_SCRIPT', true);
 //chdir(dirname(__FILE__));
 require '../config.php';
 
+if (empty($conf->global->BIRDDY_SERVER_ADDR) || empty($conf->global->BIRDDY_PORT))
+{
+	echo 'Warning : server address or port is not configured';
+	exit;
+}
+
 dol_include_once('/birddy/phpwebsocket/server/lib/SplClassLoader.php');
 
 $classLoader = new SplClassLoader('WebSocket', __DIR__ . '/../phpwebsocket/server/lib');
 $classLoader->register();
 
-$server = new \WebSocket\Server('10.0.2.15', 8000, false);
+$server = new \WebSocket\Server($conf->global->BIRDDY_IP_SERVER, $conf->global->BIRDDY_PORT, false);
 
 // TODO server settings: mettre les valeurs en conf
 $server->setMaxClients(100);

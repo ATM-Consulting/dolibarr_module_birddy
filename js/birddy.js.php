@@ -20,6 +20,11 @@
 //DEFINE('INC_FROM_DOLIBARR', true);
 require '../config.php';
 
+if (empty($conf->global->BIRDDY_SERVER_ADDR) || empty($conf->global->BIRDDY_PORT))
+{
+	exit;
+}
+
 ?>
  
 function includeJS(incFile)
@@ -37,7 +42,7 @@ $(function() {
 			return $('#birddylog').append("" + msg + "<br />");
 		};
 		// TODO replace server url 
-		birddyServerUrl = 'ws://10.0.2.15:8000/demo';
+		birddyServerUrl = 'ws://<?php echo $conf->global->BIRDDY_SERVER_ADDR.':'.$conf->global->BIRDDY_PORT; ?>/demo';
 		
 		try {
 			if (window.MozWebSocket) {
