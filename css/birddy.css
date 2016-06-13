@@ -35,6 +35,14 @@
 	height:80%;
 }
 
+#birddylog p {
+	margin:0;
+}
+
+#birddylog p.blue {
+	color:blue;
+}
+
 #birddyactionbar {
 	margin-top: 2px;
 }

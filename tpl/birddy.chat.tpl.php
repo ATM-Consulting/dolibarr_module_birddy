@@ -21,6 +21,7 @@
  
 <div id="birddychat">
 	<span id="birddystatus" class="offline"></span>
+	<input id="birddyconnectionid" type="hidden" value="" />
 	
     <div id="birddylog"></div>
     

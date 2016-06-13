@@ -27,11 +27,6 @@ if (empty($conf->global->BIRDDY_SERVER_ADDR) || empty($conf->global->BIRDDY_PORT
 $langs->load('birddy@birddy');
 
 ?>
- 
-function includeJS(incFile)
-{
-   document.write('<script type="text/javascript" src="'+ incFile+ '"></script>');
-}
 
 $(function() {
 	$.get('<?php echo dol_buildpath('/birddy/tpl/birddy.chat.tpl.php', 1); ?>', function(html) {
@@ -39,8 +34,9 @@ $(function() {
 		
 		
 		var birddylog, birddyServerUrl, birddySocket;
-		birddylog = function(msg) {
-			return $('#birddylog').append("" + msg + "<br />");
+		birddylog = function(msg, me) {
+			if (me) return $('#birddylog').append("<p class='blue'>" + msg + "</p>");
+			else return $('#birddylog').append("<p>" + msg + "</p>");
 		};
 		// TODO replace server url 
 		birddyServerUrl = 'ws://<?php echo $conf->global->BIRDDY_SERVER_ADDR.':'.$conf->global->BIRDDY_PORT; ?>/birddy';
@@ -58,14 +54,24 @@ $(function() {
 		
 		birddySocket.binaryType = 'blob';
 		
-		birddySocket.onopen = function(msg) {
+		birddySocket.onopen = function(event) {
 			return $('#birddystatus').removeClass('offline').addClass('online').attr('title', 'connected');
 		};
-		birddySocket.onmessage = function(response) {
-			//console.log(response);
-			var data = JSON.parse(response.data);
-			birddylog('<b>'+data.username+'</b>');
-			return birddylog("<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg);
+		birddySocket.onmessage = function(event) {
+			//console.log(event);
+			var data = JSON.parse(event.data);
+			
+			switch (data.action) {
+				case 'echo':
+					birddylog('<b>'+data.username+'</b>', $('#birddyconnectionid').val() == data.from);
+					return birddylog("<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg);
+					break;
+					
+				case 'getConnectionId':
+					$('#birddyconnectionid').val(data.msg);
+					break;
+			}
+			
 		};
 		birddySocket.onclose = function(msg) {
 			return $('#birddystatus').removeClass('online').addClass('offline').attr('title', 'disconnected');
@@ -84,6 +90,7 @@ $(function() {
 				payload.action = $('#birddyaction').val();
 				payload.msg = $('#birddydata').val();
 				payload.username = '<?php echo $user->firstname.' '.$user->lastname; ?>';
+				payload.from = $('#birddyconnectionid').val();
 				$('#birddydata').val('');
 				return birddySocket.send(JSON.stringify(payload));
 			}

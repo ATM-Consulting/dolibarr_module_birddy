@@ -28,7 +28,9 @@ class Birddy extends \WebSocket\Application\Application
 	public function onConnect($client)
     {
 		$id = $client->getClientId();
-        $this->_clients[$id] = $client;		
+        $this->_clients[$id] = $client;
+		
+		$client->send($this->_encodeData('getConnectionId', array('msg'=>$id)));
     }
 
     public function onDisconnect($client)
@@ -39,11 +41,14 @@ class Birddy extends \WebSocket\Application\Application
 
     public function onData($data, $client)
     {
+    	//var_dump($this->_clients);
         $decodedData = $this->_decodeData($data);		
 		if($decodedData === false)
 		{
 			// @todo: invalid request trigger error...
 		}
+		
+		$decodedData['from'] = $client->getClientId();
 		
 		$actionName = '_action' . ucfirst($decodedData['action']);
 		if(method_exists($this, $actionName))
@@ -81,9 +86,10 @@ class Birddy extends \WebSocket\Application\Application
 		}
 		
 		$payload = array(
-			'action' => $action,
-			'msg' => $data['msg'],
-			'username' => $data['username']
+			'action' => $action
+			,'msg' => $data['msg']
+			,'username' => $data['username']
+			,'from' =>$data['from']
 		);
 		
 		return json_encode($payload);
