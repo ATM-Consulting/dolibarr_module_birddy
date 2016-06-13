@@ -30,33 +30,35 @@ class Birddy extends \WebSocket\Application\Application
 		$id = $client->getClientId();
         $this->_clients[$id] = $client;
 		
-		$client->send($this->_encodeData('getConnectionId', array('msg'=>$id)));
+		$client->send($this->_encodeData('returnConnectId', array('connectId'=>$id)));
     }
 
     public function onDisconnect($client)
     {
-        $id = $client->getClientId();		
-		unset($this->_clients[$id]);     
+        $id = $client->getClientId();
+		unset($this->_clients[$id]);
     }
 
     public function onData($data, $client)
     {
     	//var_dump($this->_clients);
-        $decodedData = $this->_decodeData($data);		
+        $decodedData = $this->_decodeData($data);
 		if($decodedData === false)
 		{
 			// @todo: invalid request trigger error...
 		}
 		
-		$decodedData['from'] = $client->getClientId();
+		// Propriétaire du message
+		$decodedData['fromClientId'] = $client->getClientId();
 		
 		$actionName = '_action' . ucfirst($decodedData['action']);
 		if(method_exists($this, $actionName))
 		{
-			call_user_func(array($this, $actionName), $decodedData);
+			call_user_func(array($this, $actionName), $decodedData, $client);
 		}
     }
 	
+	/*
 	public function onBinaryData($data, $client)
 	{		
 		$filePath = substr(__FILE__, 0, strpos(__FILE__, 'server')) . 'tmp/';
@@ -77,6 +79,7 @@ class Birddy extends \WebSocket\Application\Application
 		$client->send($this->_encodeData('echo', $msg));
 		$this->_filename = '';
 	}
+	*/
 	
 	protected function _encodeData($action, $data)
 	{
@@ -85,12 +88,8 @@ class Birddy extends \WebSocket\Application\Application
 			return false;
 		}
 		
-		$payload = array(
-			'action' => $action
-			,'msg' => $data['msg']
-			,'username' => $data['username']
-			,'from' =>$data['from']
-		);
+		$payload = $data;
+		$payload['action'] = $action;
 		
 		return json_encode($payload);
 	}
@@ -103,7 +102,7 @@ class Birddy extends \WebSocket\Application\Application
 			return false;
 		}
 		
-		if(isset($decodedData['action'], $decodedData['msg']) === false)
+		if(empty($decodedData['action']))
 		{
 			return false;
 		}
@@ -113,6 +112,10 @@ class Birddy extends \WebSocket\Application\Application
 	
 	private function _actionEcho($data)
 	{
+		if (empty($data['msg']))
+		{
+			return false;
+		}
 		//var_dump($data);
 		$encodedData = $this->_encodeData('echo', $data);
 		//var_dump($encodedData);
@@ -120,6 +123,27 @@ class Birddy extends \WebSocket\Application\Application
 		{
 			$sendto->send($encodedData);
         }
+	}
+	
+	private function _actionSetUserToSocketClient($data, $client)
+	{
+		$client->userId = $data['userId'];
+		$client->username = $data['username'];
+	}
+	
+	private function _actionShowAllClient($data, $client)
+	{
+		$Tab = array();
+		
+		foreach ($this->_clients as $sendto)
+		{
+			if ($sendto->getClientId() !== $client->getClientId())
+			{
+				$Tab[] = array('userId' => $sendto->userId, 'username' => $sendto->username);
+			}
+		}
+
+		$client->send($this->_encodeData('returnShowAllClient', $Tab));
 	}
 	
 	private function _actionSetFilename($filename)

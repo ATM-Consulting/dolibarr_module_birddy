@@ -33,6 +33,8 @@
 	background:#FFF;
 	border:1px solid #ddd;
 	height:80%;
+	overflow:auto;
+	padding:1px;
 }
 
 #birddylog p {

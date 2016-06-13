@@ -34,9 +34,8 @@ $(function() {
 		
 		
 		var birddylog, birddyServerUrl, birddySocket;
-		birddylog = function(msg, me) {
-			if (me) return $('#birddylog').append("<p class='blue'>" + msg + "</p>");
-			else return $('#birddylog').append("<p>" + msg + "</p>");
+		birddylog = function(msg, class_string) {
+			return $('#birddylog').append("<p class='"+ class_string +"'>" + msg + "</p>");
 		};
 		// TODO replace server url 
 		birddyServerUrl = 'ws://<?php echo $conf->global->BIRDDY_SERVER_ADDR.':'.$conf->global->BIRDDY_PORT; ?>/birddy';
@@ -63,19 +62,53 @@ $(function() {
 			
 			switch (data.action) {
 				case 'echo':
-					birddylog('<b>'+data.username+'</b>', $('#birddyconnectionid').val() == data.from);
-					return birddylog("<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg);
+					if ($('#birddyconnectionid').val() == data.fromClientId)
+					{
+						birddylog("<b><?php echo $langs->transnoentities('birddy_You'); ?></b>");
+						birddylog("<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg);
+					}
+					else
+					{
+						birddylog("<b>" + data.username + "</b>");
+						birddylog("<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg);	
+					}
+					
+					var elBirddylog = document.getElementById("birddylog");
+					elBirddylog.scrollTop = elBirddylog.scrollHeight;
+
 					break;
 					
-				case 'getConnectionId':
-					$('#birddyconnectionid').val(data.msg);
+				case 'returnConnectId':
+					$('#birddyconnectionid').val(data.connectId);
+					
+					var payload;
+					payload = new Object();
+					payload.action = 'setUserToSocketClient';
+					payload.userId = <?php echo (int) $user->id; ?>;
+					payload.username = '<?php echo $user->firstname.' '.$user->lastname; ?>';
+					birddySocket.send(JSON.stringify(payload));
+					
+					break;
+					
+				case 'returnShowAllClient':
+					console.log(data);
 					break;
 			}
 			
+			return;
 		};
 		birddySocket.onclose = function(msg) {
 			return $('#birddystatus').removeClass('online').addClass('offline').attr('title', 'disconnected');
 		};
+		
+		
+		$('#birddyshowclients').click(function(event) {
+			var payload;
+			payload = new Object();
+			payload.action = 'showAllClient';
+			console.log('sdgdf');
+			return birddySocket.send(JSON.stringify(payload));
+		});
 		
 		/*
 		$('#birddystatus').click(function() {
@@ -90,7 +123,7 @@ $(function() {
 				payload.action = $('#birddyaction').val();
 				payload.msg = $('#birddydata').val();
 				payload.username = '<?php echo $user->firstname.' '.$user->lastname; ?>';
-				payload.from = $('#birddyconnectionid').val();
+				payload.fromClientId = $('#birddyconnectionid').val();
 				$('#birddydata').val('');
 				return birddySocket.send(JSON.stringify(payload));
 			}
