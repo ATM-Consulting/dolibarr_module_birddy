@@ -16,19 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+ 
  ?>
  
 <div id="birddychat">
-	<span id="birddystatus" class="offline"></span>
-	<div id="birddyshowclients">O</div>
 	<input id="birddyconnectionid" type="hidden" value="" />
+	<input id="birddyclientid" type="hidden" value="" />
 	
-    <div id="birddylog"></div>
+	
+	<div id="birddytabuser-container">
+		<p langs="birddy_speakwith">birddy_speakwith</p>
+		<ul id="birddytabuser"></ul>
+	</div>
+	
+	<span id="birddystatus" class="offline"></span>
+	<span id="birddyshowclients">O</span>
+	
+	<div id="birddy-tab">
+		<ul id="birddy-tab-list">
+		</ul>
+		
+		<div id="birddy-tab-container">
+		</div>	
+	</div>
+	
+	
+    <!-- <div id="birddylog"></div> -->
     
 	
 	<div id="birddyactionbar">
-		<input id="birddyaction" placeholder="action" type="hidden" value="echo" />
 	    <input id="birddydata" placeholder="text..." type="text" />
 	    <!-- <input id="birddysend" type="button" value="Send" /> -->
 	</div>

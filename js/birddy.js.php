@@ -32,10 +32,19 @@ $(function() {
 	$.get('<?php echo dol_buildpath('/birddy/tpl/birddy.chat.tpl.php', 1); ?>', function(html) {
 		$('body').append(html);
 		
+		var birddyServerUrl, birddySocket;
 		
-		var birddylog, birddyServerUrl, birddySocket;
-		birddylog = function(msg, class_string) {
-			return $('#birddylog').append("<p class='"+ class_string +"'>" + msg + "</p>");
+		function birddylog(data, msg, class_string) {
+			var clientId;
+
+			if ($('#birddyconnectionid').val() == data.fromClientId) clientId = data.clientIdTarget;
+			else clientId = data.fromClientId;
+			
+			var elBirddylog = $('#birddylog-'+clientId);
+			if (elBirddylog.length == 0) openChat(data.username, clientId);
+			
+			elBirddylog.append("<p class='"+ class_string +"'>" + msg + "</p>");
+			elBirddylog.scrollTop = elBirddylog.scrollHeight;
 		};
 		// TODO replace server url 
 		birddyServerUrl = 'ws://<?php echo $conf->global->BIRDDY_SERVER_ADDR.':'.$conf->global->BIRDDY_PORT; ?>/birddy';
@@ -57,24 +66,20 @@ $(function() {
 			return $('#birddystatus').removeClass('offline').addClass('online').attr('title', 'connected');
 		};
 		birddySocket.onmessage = function(event) {
-			//console.log(event);
 			var data = JSON.parse(event.data);
 			
 			switch (data.action) {
 				case 'echo':
 					if ($('#birddyconnectionid').val() == data.fromClientId)
 					{
-						birddylog("<b><?php echo $langs->transnoentities('birddy_You'); ?></b>");
-						birddylog("<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg);
+						birddylog(data, "<b><?php echo $langs->transnoentities('birddy_You'); ?></b>");
+						birddylog(data, "<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg);
 					}
 					else
 					{
-						birddylog("<b>" + data.username + "</b>");
-						birddylog("<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg);	
+						birddylog(data, "<b>" + data.username + "</b>");
+						birddylog(data, "<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg);	
 					}
-					
-					var elBirddylog = document.getElementById("birddylog");
-					elBirddylog.scrollTop = elBirddylog.scrollHeight;
 
 					break;
 					
@@ -90,8 +95,18 @@ $(function() {
 					
 					break;
 					
-				case 'returnShowAllClient':
-					console.log(data);
+				case 'returnGetAllClient':
+					var tabUser = $('#birddytabuser');
+					tabUser.empty();
+					for (var i=0; i<data.TUser.length; i++)
+					{
+						tabUser.append('<li data-fk-user="'+data.TUser[i].userId+'" data-client-id="'+data.TUser[i].clientId+'">'+data.TUser[i].username+'</li>');
+					}
+					
+					$('#birddytabuser li').dblclick(function(event) {
+						openChat(event.target.innerText, event.target.dataset.clientId);
+					});
+					
 					break;
 			}
 			
@@ -105,7 +120,7 @@ $(function() {
 		$('#birddyshowclients').click(function(event) {
 			var payload;
 			payload = new Object();
-			payload.action = 'showAllClient';
+			payload.action = 'getAllClient';
 			console.log('sdgdf');
 			return birddySocket.send(JSON.stringify(payload));
 		});
@@ -120,11 +135,13 @@ $(function() {
 			if (event.keyCode === 13) {
 				var payload;
 				payload = new Object();
-				payload.action = $('#birddyaction').val();
+				payload.action = 'echo';
 				payload.msg = $('#birddydata').val();
 				payload.username = '<?php echo $user->firstname.' '.$user->lastname; ?>';
 				payload.fromClientId = $('#birddyconnectionid').val();
+				payload.clientIdTarget = $('#birddy-tab-container .birddylog.active').data('client-id');
 				$('#birddydata').val('');
+				
 				return birddySocket.send(JSON.stringify(payload));
 			}
 		});
@@ -144,7 +161,28 @@ $(function() {
 		});
 		*/
 		
-		
+		function openChat(username, clientId) {
+			if ($('#birddytab-'+clientId).length == 0)
+			{
+				var li = $('<li id="birddytab-'+clientId+'" data-client-id="'+clientId+'" class="birddytab">'+username+'</li>');
+				var log = $('<div id="birddylog-'+clientId+'" data-client-id="'+clientId+'" class="birddylog"></div>');
+				
+				$('#birddy-tab-list').append(li);
+				$('#birddy-tab-container').append(log)	
+			}
+			
+			$('#birddy-tab-list li').unbind().bind('click', function(event) {
+				// Select the tab
+				$('#birddy-tab-list li.active').removeClass('active');
+				$('#birddytab-'+event.target.dataset.clientId).addClass('active');
+				
+				// Select the dialog to show
+				$('#birddy-tab-container .birddylog.active').removeClass('active');
+				$('#birddylog-'+event.target.dataset.clientId).addClass('active');
+			});
+			
+			$('#birddytab-'+clientId).trigger('click');
+		}
 		
 	});
 	

@@ -15,10 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- //namespace WebSocket\Application;
-//dol_include_once('/birddy/phpwebsocket/server/lib/WebSocket/Application/Application.php');
-
-
 
 class Birddy extends \WebSocket\Application\Application
 {
@@ -121,7 +117,15 @@ class Birddy extends \WebSocket\Application\Application
 		//var_dump($encodedData);
 		foreach($this->_clients as $sendto)
 		{
-			$sendto->send($encodedData);
+			if (!empty($data['clientIdTarget']))
+			{
+				if (in_array($sendto->getClientId(), array($data['clientIdTarget'], $data['fromClientId'])))
+					$sendto->send($encodedData);
+			}
+			else 
+			{
+				$sendto->send($encodedData);
+			}
         }
 	}
 	
@@ -129,9 +133,11 @@ class Birddy extends \WebSocket\Application\Application
 	{
 		$client->userId = $data['userId'];
 		$client->username = $data['username'];
+		
+		$this->_actionGetAllClient(null, $client);
 	}
 	
-	private function _actionShowAllClient($data, $client)
+	private function _actionGetAllClient($data, $client)
 	{
 		$Tab = array();
 		
@@ -139,11 +145,11 @@ class Birddy extends \WebSocket\Application\Application
 		{
 			if ($sendto->getClientId() !== $client->getClientId())
 			{
-				$Tab[] = array('userId' => $sendto->userId, 'username' => $sendto->username);
+				$Tab[] = array('userId' => $sendto->userId, 'username' => $sendto->username, 'clientId' => $sendto->getClientId());
 			}
 		}
 
-		$client->send($this->_encodeData('returnShowAllClient', $Tab));
+		$client->send($this->_encodeData('returnGetAllClient', array('TUser'=>$Tab)));
 	}
 	
 	private function _actionSetFilename($filename)
@@ -163,4 +169,5 @@ class Birddy extends \WebSocket\Application\Application
 		}
 		return false;
 	}
+	
 }

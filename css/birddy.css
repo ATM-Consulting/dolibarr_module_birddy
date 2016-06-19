@@ -28,23 +28,6 @@
 	border:1px solid #ddd;
 }
 
-#birddylog {
-	margin-top:2px;
-	background:#FFF;
-	border:1px solid #ddd;
-	height:80%;
-	overflow:auto;
-	padding:1px;
-}
-
-#birddylog p {
-	margin:0;
-}
-
-#birddylog p.blue {
-	color:blue;
-}
-
 #birddyactionbar {
 	margin-top: 2px;
 }
@@ -69,4 +52,80 @@
 
 #birddystatus.online {
 	background:#4cd450;
+}
+
+#birddytabuser-container {
+	position:absolute;
+	top:45px;
+	left:-105px;
+	max-width:100px;
+}
+#birddytabuser-container p {
+	margin:5px 0;
+}
+#birddytabuser {
+	margin:0;
+	padding:0;
+	list-style-type:none;
+}
+#birddytabuser li {
+	padding:2px 0;
+	cursor:pointer;
+}
+#birddytabuser li:hover {
+	background:rgb(237, 244, 251) none repeat scroll 0 0 !important
+}
+
+
+
+#birddy-tab-list {
+	margin:0;
+	padding:0;
+	list-style-type:none;
+}
+
+#birddy-tab-list li {
+ 	background: #fff;
+    border: 1px solid #ccc;
+    border-bottom:none;
+    border-radius: 9px 9px 0 0;
+    float: left;
+    margin-right: 3px;
+    padding: 4px 4px 2px;
+    cursor:pointer;
+}
+
+#birddy-tab-list li.active {
+	background:#ddd
+}
+
+#birddy-tab {
+	height:80%;
+	width:100%;
+}
+
+#birddy-tab-container {
+	overflow:auto;
+	height:100%;
+	width:100%;
+}
+
+#birddy-tab-container .birddylog {
+	background:#FFF;
+	padding:2px;
+	border:1px solid #ddd;
+	height:80%;
+	display:none;
+}
+
+#birddy-tab-container .birddylog.active {
+	display:block;
+}
+
+#birddy-tab-container .birddylog p {
+	margin:0;
+}
+
+#birddy-tab-container .birddylog p.blue {
+	color:blue;
 }
