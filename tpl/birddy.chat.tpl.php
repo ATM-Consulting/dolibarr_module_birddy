@@ -45,7 +45,7 @@
     
 	
 	<div id="birddyactionbar">
-	    <input id="birddydata" placeholder="text..." type="text" />
+	    <input id="birddydata" placeholder="text..." type="text" class="lightblue" />
 	    <!-- <input id="birddysend" type="button" value="Send" /> -->
 	</div>
 	

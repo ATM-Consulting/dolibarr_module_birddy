@@ -72,13 +72,13 @@ $(function() {
 				case 'echo':
 					if (<?php echo (int) $user->id; ?> == data.fk_user_origin)
 					{
-						birddylog(data, "<b><?php echo $langs->transnoentities('birddy_You'); ?></b>");
-						birddylog(data, "<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg);
+						birddylog(data, "<?php echo $langs->transnoentities('birddy_You'); ?>", "lightblue bold");
+						birddylog(data, "<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg, "lightblue");
 					}
 					else
 					{
-						birddylog(data, "<b>" + data.username_origin + "</b>");
-						birddylog(data, "<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg);	
+						birddylog(data, data.username_origin, "lightred bold");
+						birddylog(data, "<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg, "lightred");	
 					}
 
 					break;
