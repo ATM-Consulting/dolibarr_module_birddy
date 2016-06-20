@@ -117,9 +117,9 @@ class Birddy extends \WebSocket\Application\Application
 		//var_dump($encodedData);
 		foreach($this->_clients as $sendto)
 		{
-			if (!empty($data['clientIdTarget']))
+			if (!empty($data['fk_user_target']))
 			{
-				if (in_array($sendto->getClientId(), array($data['clientIdTarget'], $data['fromClientId'])))
+				if (in_array($sendto->fk_user, array($data['fk_user_target'], $data['fk_user_origin'])))
 					$sendto->send($encodedData);
 			}
 			else 
@@ -131,7 +131,7 @@ class Birddy extends \WebSocket\Application\Application
 	
 	private function _actionSetUserToSocketClient($data, $client)
 	{
-		$client->userId = $data['userId'];
+		$client->fk_user = $data['fk_user_origin'];
 		$client->username = $data['username'];
 		
 		$this->_actionGetAllClient(null, $client);
@@ -145,7 +145,7 @@ class Birddy extends \WebSocket\Application\Application
 		{
 			if ($sendto->getClientId() !== $client->getClientId())
 			{
-				$Tab[] = array('userId' => $sendto->userId, 'username' => $sendto->username, 'clientId' => $sendto->getClientId());
+				$Tab[] = array('fk_user' => $sendto->fk_user, 'username' => $sendto->username);
 			}
 		}
 

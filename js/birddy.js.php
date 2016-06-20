@@ -35,13 +35,13 @@ $(function() {
 		var birddyServerUrl, birddySocket;
 		
 		function birddylog(data, msg, class_string) {
-			var clientId;
+			var fk_user;
 
-			if ($('#birddyconnectionid').val() == data.fromClientId) clientId = data.clientIdTarget;
-			else clientId = data.fromClientId;
+			if (<?php echo (int) $user->id; ?> == data.fk_user_origin) fk_user = data.fk_user_target;
+			else fk_user = data.fk_user_origin;
 			
-			var elBirddylog = $('#birddylog-'+clientId);
-			if (elBirddylog.length == 0) openChat(data.username, clientId);
+			var elBirddylog = $('#birddylog-'+fk_user);
+			if (elBirddylog.length == 0) openChat(data.username, fk_user);
 			
 			elBirddylog.append("<p class='"+ class_string +"'>" + msg + "</p>");
 			elBirddylog.scrollTop = elBirddylog.scrollHeight;
@@ -70,7 +70,7 @@ $(function() {
 			
 			switch (data.action) {
 				case 'echo':
-					if ($('#birddyconnectionid').val() == data.fromClientId)
+					if (<?php echo (int) $user->id; ?> == data.fk_user_origin)
 					{
 						birddylog(data, "<b><?php echo $langs->transnoentities('birddy_You'); ?></b>");
 						birddylog(data, "<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg);
@@ -89,7 +89,7 @@ $(function() {
 					var payload;
 					payload = new Object();
 					payload.action = 'setUserToSocketClient';
-					payload.userId = <?php echo (int) $user->id; ?>;
+					payload.fk_user_origin = <?php echo (int) $user->id; ?>;
 					payload.username = '<?php echo $user->firstname.' '.$user->lastname; ?>';
 					birddySocket.send(JSON.stringify(payload));
 					
@@ -100,11 +100,12 @@ $(function() {
 					tabUser.empty();
 					for (var i=0; i<data.TUser.length; i++)
 					{
-						tabUser.append('<li data-fk-user="'+data.TUser[i].userId+'" data-client-id="'+data.TUser[i].clientId+'">'+data.TUser[i].username+'</li>');
+						if (data.TUser[i].fk_user != <?php echo (int) $user->id; ?> && $('#birddytabuser li[data-fk-user='+data.TUser[i].fk_user+']').length == 0)
+							tabUser.append('<li data-fk-user="'+data.TUser[i].fk_user+'">'+data.TUser[i].username+'</li>');
 					}
 					
 					$('#birddytabuser li').dblclick(function(event) {
-						openChat(event.target.innerText, event.target.dataset.clientId);
+						openChat(event.target.textContent, event.target.dataset.fkUser);
 					});
 					
 					break;
@@ -121,7 +122,7 @@ $(function() {
 			var payload;
 			payload = new Object();
 			payload.action = 'getAllClient';
-			console.log('sdgdf');
+			
 			return birddySocket.send(JSON.stringify(payload));
 		});
 		
@@ -138,8 +139,9 @@ $(function() {
 				payload.action = 'echo';
 				payload.msg = $('#birddydata').val();
 				payload.username = '<?php echo $user->firstname.' '.$user->lastname; ?>';
-				payload.fromClientId = $('#birddyconnectionid').val();
-				payload.clientIdTarget = $('#birddy-tab-container .birddylog.active').data('client-id');
+				payload.fk_user_origin = <?php echo (int) $user->id; ?>;
+				payload.fk_user_target = $('#birddy-tab-container .birddylog.active').data('fk-user');
+				
 				$('#birddydata').val('');
 				
 				return birddySocket.send(JSON.stringify(payload));
@@ -161,11 +163,11 @@ $(function() {
 		});
 		*/
 		
-		function openChat(username, clientId) {
-			if ($('#birddytab-'+clientId).length == 0)
+		function openChat(username, fk_user) {
+			if ($('#birddytab-'+fk_user).length == 0)
 			{
-				var li = $('<li id="birddytab-'+clientId+'" data-client-id="'+clientId+'" class="birddytab">'+username+'</li>');
-				var log = $('<div id="birddylog-'+clientId+'" data-client-id="'+clientId+'" class="birddylog"></div>');
+				var li = $('<li id="birddytab-'+fk_user+'" data-fk-user="'+fk_user+'" class="birddytab">'+username+' <span class="birddy-close-tab" data-fk-user="'+fk_user+'" title="<?php echo $langs->transnoentitiesnoconv('birddy_close_tab'); ?>">x</span></li>');
+				var log = $('<div id="birddylog-'+fk_user+'" data-fk-user="'+fk_user+'" class="birddylog"></div>');
 				
 				$('#birddy-tab-list').append(li);
 				$('#birddy-tab-container').append(log)	
@@ -174,14 +176,19 @@ $(function() {
 			$('#birddy-tab-list li').unbind().bind('click', function(event) {
 				// Select the tab
 				$('#birddy-tab-list li.active').removeClass('active');
-				$('#birddytab-'+event.target.dataset.clientId).addClass('active');
+				$('#birddytab-'+event.target.dataset.fkUser).addClass('active');
 				
 				// Select the dialog to show
 				$('#birddy-tab-container .birddylog.active').removeClass('active');
-				$('#birddylog-'+event.target.dataset.clientId).addClass('active');
+				$('#birddylog-'+event.target.dataset.fkUser).addClass('active');
 			});
 			
-			$('#birddytab-'+clientId).trigger('click');
+			$('#birddychat .birddy-close-tab').unbind().bind('click', function(event) {
+				var clientId = event.target.dataset.fkUser;
+				$('#birddytab-'+fk_user+', #birddylog-'+fk_user).remove();
+			});
+			
+			$('#birddytab-'+fk_user).trigger('click');
 		}
 		
 	});
