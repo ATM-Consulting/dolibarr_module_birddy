@@ -41,7 +41,7 @@ $(function() {
 			else fk_user = data.fk_user_origin;
 			
 			var elBirddylog = $('#birddylog-'+fk_user);
-			if (elBirddylog.length == 0) openChat(data.username, fk_user);
+			if (elBirddylog.length == 0) openChat(data.username_origin, fk_user);
 			
 			elBirddylog.append("<p class='"+ class_string +"'>" + msg + "</p>");
 			elBirddylog.scrollTop = elBirddylog.scrollHeight;
@@ -77,7 +77,7 @@ $(function() {
 					}
 					else
 					{
-						birddylog(data, "<b>" + data.username + "</b>");
+						birddylog(data, "<b>" + data.username_origin + "</b>");
 						birddylog(data, "<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg);	
 					}
 
@@ -138,7 +138,7 @@ $(function() {
 				payload = new Object();
 				payload.action = 'echo';
 				payload.msg = $('#birddydata').val();
-				payload.username = '<?php echo $user->firstname.' '.$user->lastname; ?>';
+				payload.username_origin = '<?php echo $user->firstname.' '.$user->lastname; ?>';
 				payload.fk_user_origin = <?php echo (int) $user->id; ?>;
 				payload.fk_user_target = $('#birddy-tab-container .birddylog.active').data('fk-user');
 				

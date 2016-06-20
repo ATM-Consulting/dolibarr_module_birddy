@@ -108,21 +108,16 @@ class Birddy extends \WebSocket\Application\Application
 	
 	private function _actionEcho($data)
 	{
-		if (empty($data['msg']))
-		{
-			return false;
-		}
-		//var_dump($data);
+		if (empty($data['msg']) || empty($data['fk_user_target']) || empty($data['fk_user_origin'])) return false;
+		
 		$encodedData = $this->_encodeData('echo', $data);
-		//var_dump($encodedData);
 		foreach($this->_clients as $sendto)
 		{
 			if (!empty($data['fk_user_target']))
 			{
-				if (in_array($sendto->fk_user, array($data['fk_user_target'], $data['fk_user_origin'])))
-					$sendto->send($encodedData);
+				if (in_array($sendto->fk_user, array($data['fk_user_target'], $data['fk_user_origin']))) $sendto->send($encodedData);
 			}
-			else 
+			else
 			{
 				$sendto->send($encodedData);
 			}
