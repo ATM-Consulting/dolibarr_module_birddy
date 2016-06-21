@@ -41,7 +41,10 @@ $(function() {
 			else fk_user = data.fk_user_origin;
 			
 			var elBirddylog = $('#birddylog-'+fk_user);
-			if (elBirddylog.length == 0) openChat(data.username_origin, fk_user);
+			if (elBirddylog.length == 0) { 
+				openChat(data.username_origin, fk_user);
+				elBirddylog = $(elBirddylog.selector);
+			}
 			
 			elBirddylog.append("<p class='"+ class_string +"'>" + msg + "</p>");
 			elBirddylog.scrollTop = elBirddylog.scrollHeight;
