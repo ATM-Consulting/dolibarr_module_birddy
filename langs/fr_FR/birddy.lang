@@ -9,3 +9,6 @@ birddyAbout = A propos du module birddy
 
 birddy_say=dit :
 birddy_You=Vous
+
+birddy_show_users=Afficher les utilisateurs joignables
+birddy_speakwith=Parler avec...

@@ -17,20 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
+ require '../config.php';
+ $langs->load('birddy@birddy');
+ 
  ?>
  
 <div id="birddychat">
 	<input id="birddyconnectionid" type="hidden" value="" />
 	<input id="birddyclientid" type="hidden" value="" />
 	
+	<input type="button"  class="button" id="birddyshowclients" title="<?php echo $langs->transnoentitiesnoconv('birddy_show_users'); ?>" value="V" />
+	<span id="birddystatus" class="offline"></span>
 	
 	<div id="birddytabuser-container">
-		<p langs="birddy_speakwith">birddy_speakwith</p>
+		<p><?php echo $langs->trans('birddy_speakwith'); ?></p>
 		<ul id="birddytabuser"></ul>
 	</div>
-	
-	<span id="birddystatus" class="offline"></span>
-	<span id="birddyshowclients">O</span>
 	
 	<div id="birddy-tab">
 		<ul id="birddy-tab-list">

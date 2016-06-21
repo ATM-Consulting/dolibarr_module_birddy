@@ -60,12 +60,19 @@
 	text-indent:4px;
 }
 
+#birddyshowclients {
+	float:left;
+	margin-left:8px;
+	cursor:pointer;
+}
+
 #birddystatus {
 	display:block;
     height:12px;
     width:12px;
     border-radius:10px;
     cursor:pointer;
+    margin:auto;
 }
 
 #birddystatus.offline {
@@ -77,10 +84,16 @@
 }
 
 #birddytabuser-container {
-	position:absolute;
-	top:45px;
-	left:-105px;
-	max-width:100px;
+	background: #f1f1f1 none repeat scroll 0 0;
+    border-left: 1px solid #ddd;
+    border-radius: 9px 0 0;
+    border-top: 1px solid #ddd;
+    height: 247px;
+    left: -126px;
+    padding: 8px 2px;
+    position: absolute;
+    top: 0;
+    width: 120px;
 }
 #birddytabuser-container p {
 	margin:5px 0;

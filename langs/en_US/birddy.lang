@@ -9,3 +9,6 @@ birddyAbout = About birddy
 
 birddy_say=say:
 birddy_You=You
+
+birddy_show_users=Show reachable users
+birddy_speakwith=Speak with...
