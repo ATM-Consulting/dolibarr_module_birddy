@@ -26,13 +26,13 @@
 	<input id="birddyconnectionid" type="hidden" value="" />
 	<input id="birddyclientid" type="hidden" value="" />
 	
-	<input type="button"  class="button" id="birddyshowclients" title="<?php echo $langs->transnoentitiesnoconv('birddy_show_users'); ?>" value="V" />
-	<span id="birddystatus" class="offline"></span>
+	<i id="birddyshowclients" class=" fa fa-user-plus" aria-hidden="true" title="<?php echo $langs->transnoentitiesnoconv('birddy_show_users'); ?>"></i>
+	<i id="birddy-reduce-window" class="fa fa-minus-square-o" aria-hidden="true" title="<?php echo $langs->transnoentitiesnoconv('birddy_reduce_box'); ?>"></i>
+
 	
-	<div id="birddytabuser-container">
-		<p><?php echo $langs->trans('birddy_speakwith'); ?></p>
-		<ul id="birddytabuser"></ul>
-	</div>
+	<i id="birddystatus" class="offline fa fa-circle" aria-hidden="true"></i>
+
+	
 	
 	<div id="birddy-tab">
 		<ul id="birddy-tab-list">
@@ -60,3 +60,9 @@
 	</form>
 	-->
 </div>
+
+<div id="birddytabuser-container">
+	<i id="birddytabuser-logo" class="fa fa-users" aria-hidden="true" title="<?php echo $langs->trans('birddy_speakwith'); ?>"></i>
+	<ul id="birddytabuser"></ul>
+</div>
+	

@@ -26,6 +26,7 @@
 	background:#F1F1F1;
 	border-radius:10px 10px 0 0;
 	border:1px solid #ddd;
+	z-index:8010;
 }
 
 #birddychat .lightblue {
@@ -62,25 +63,41 @@
 
 #birddyshowclients {
 	float:left;
-	margin-left:8px;
+	font-size: 19px;
+    margin-left: 14px;
 	cursor:pointer;
 }
 
+#birddyshowclients:hover {
+	color:#333;
+}
+
 #birddystatus {
-	display:block;
-    height:12px;
-    width:12px;
-    border-radius:10px;
-    cursor:pointer;
-    margin:auto;
+	cursor: pointer;
+    display: block;
+    font-size: 18px;
+    height: 18px;
+    margin: 1px auto 0;
+    width: 16px;
 }
 
 #birddystatus.offline {
-	background:red;
+	color:red;
 }
 
 #birddystatus.online {
-	background:#4cd450;
+	color:#4cd450;
+}
+
+#birddy-reduce-window {
+	float:right;
+	margin:0 12px;
+	cursor:pointer;
+	font-size:20px;
+}
+
+#birddy-reduce-window:hover {
+	color:#333;
 }
 
 #birddytabuser-container {
@@ -89,26 +106,38 @@
     border-radius: 9px 0 0;
     border-top: 1px solid #ddd;
     height: 247px;
-    left: -126px;
-    padding: 8px 2px;
-    position: absolute;
-    top: 0;
-    width: 120px;
+    right: 141px;
+    padding: 8px 8px 8px 2px;
+    position: fixed;
+    bottom: 0;
+    width: 130px;
+    z-index:8001;
 }
+
 #birddytabuser-container p {
 	margin:5px 0;
 }
+
+#birddytabuser-logo {
+	display: block;
+    font-size: 22px;
+    margin:0 auto 6px;
+    width: 25px;
+    cursor:default;
+}
+
 #birddytabuser {
 	margin:0;
 	padding:0;
 	list-style-type:none;
 }
+
 #birddytabuser li {
-	padding:2px 0;
+	padding:2px 20px 2px 4px;
 	cursor:pointer;
 }
 #birddytabuser li:hover {
-	background:rgb(237, 244, 251) none repeat scroll 0 0 !important
+	background:rgb(217, 224, 231) none repeat scroll 0 0 !important
 }
 
 #birddy-tab-list {

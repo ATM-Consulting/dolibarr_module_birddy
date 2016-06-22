@@ -122,11 +122,22 @@ $(function() {
 		
 		
 		$('#birddyshowclients').click(function(event) {
-			var payload;
-			payload = new Object();
-			payload.action = 'getAllClient';
+			var box = $("#birddytabuser-container"); 
 			
-			return birddySocket.send(JSON.stringify(payload));
+			if (box.hasClass("open"))
+			{
+				box.animate({right:"141px"}).removeClass("open");
+			}
+			else
+			{
+				var payload;
+				payload = new Object();
+				payload.action = 'getAllClient';
+				
+				birddySocket.send(JSON.stringify(payload));
+			
+				box.animate({right:"275px"}).addClass("open");
+			}
 		});
 		
 		/*
@@ -169,7 +180,7 @@ $(function() {
 		function openChat(username, fk_user) {
 			if ($('#birddytab-'+fk_user).length == 0)
 			{
-				var li = $('<li id="birddytab-'+fk_user+'" data-fk-user="'+fk_user+'" class="birddytab">'+username+' <span class="birddy-close-tab" data-fk-user="'+fk_user+'" title="<?php echo $langs->transnoentitiesnoconv('birddy_close_tab'); ?>">x</span></li>');
+				var li = $('<li id="birddytab-'+fk_user+'" data-fk-user="'+fk_user+'" class="birddytab">'+username+' <i class="birddy-close-tab fa fa-times" data-fk-user="'+fk_user+'" title="<?php echo $langs->transnoentitiesnoconv('birddy_close_tab'); ?>"></i></li>');
 				var log = $('<div id="birddylog-'+fk_user+'" data-fk-user="'+fk_user+'" class="birddylog"></div>');
 				
 				$('#birddy-tab-list').append(li);
