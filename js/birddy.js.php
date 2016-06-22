@@ -49,7 +49,7 @@ $(function() {
 			elBirddylog.append("<p class='"+ class_string +"'>" + msg + "</p>");
 			elBirddylog.scrollTop = elBirddylog.scrollHeight;
 		};
-		// TODO replace server url 
+		 
 		birddyServerUrl = 'ws://<?php echo $conf->global->BIRDDY_SERVER_ADDR.':'.$conf->global->BIRDDY_PORT; ?>/birddy';
 		
 		try {
@@ -68,6 +68,7 @@ $(function() {
 		birddySocket.onopen = function(event) {
 			return $('#birddystatus').removeClass('offline').addClass('online').attr('title', 'connected');
 		};
+		
 		birddySocket.onmessage = function(event) {
 			var data = JSON.parse(event.data);
 			
@@ -116,17 +117,18 @@ $(function() {
 			
 			return;
 		};
+		
 		birddySocket.onclose = function(msg) {
 			return $('#birddystatus').removeClass('online').addClass('offline').attr('title', 'disconnected');
 		};
 		
 		
-		$('#birddyshowclients').click(function(event) {
+		function openOrCloseListUser(callback) {
 			var box = $("#birddytabuser-container"); 
 			
 			if (box.hasClass("open"))
 			{
-				box.animate({right:"141px"}).removeClass("open");
+				box.animate({right:"141px"}, callback).removeClass("open");
 			}
 			else
 			{
@@ -136,8 +138,42 @@ $(function() {
 				
 				birddySocket.send(JSON.stringify(payload));
 			
-				box.animate({right:"275px"}).addClass("open");
+				box.animate({right:"275px"}, callback).addClass("open");
 			}
+		}
+		
+		$('#birddyshowclients').click(function(event) {
+			openOrCloseListUser();
+		});
+		
+		function hideOrShowChat() {
+			var birddychat = $("#birddychat");
+			if (birddychat.hasClass('close'))
+			{
+				birddychat.animate({bottom:0}, tabUserShow).removeClass('close').addClass('open');
+				$("#birddy-reduce-window").toggleClass('fa-minus-square-o fa-plus-square-o');
+			}
+			else
+			{
+				tabUserHide();
+				birddychat.animate({bottom:"-258px"}).removeClass('open').addClass('close');
+				$("#birddy-reduce-window").toggleClass('fa-plus-square-o fa-minus-square-o');
+			}
+		}
+		
+		function tabUserHide() {
+			$("#birddytabuser-container").hide()
+		}
+		
+		function tabUserShow() {
+			$("#birddytabuser-container").show()
+		}
+		
+		$("#birddy-reduce-window").click(function(event) {
+			var tabUser = $("#birddytabuser-container");
+			
+			if (tabUser.hasClass('open')) openOrCloseListUser(hideOrShowChat);
+			else hideOrShowChat();
 		});
 		
 		/*
