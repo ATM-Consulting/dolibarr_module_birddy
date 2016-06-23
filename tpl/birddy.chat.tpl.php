@@ -35,7 +35,10 @@
 	
 	
 	<div id="birddy-tab">
-		<ul id="birddy-tab-list">
+		<i data-direction="right" class="birddy-move-tab direction-left fa fa-chevron-left" aria-hidden="true"></i>
+		<i data-direction="left" class="birddy-move-tab direction-right fa fa-chevron-right" aria-hidden="true"></i>
+		
+		<ul style='' id="birddy-tab-list" data-currently-moving="0">
 		</ul>
 		
 		<div id="birddy-tab-container">

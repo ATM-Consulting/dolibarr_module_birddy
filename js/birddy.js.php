@@ -109,7 +109,7 @@ $(function() {
 					{
 						if (data.TUser[i].fk_user != <?php echo (int) $user->id; ?> && $('#birddytabuser li[data-fk-user='+data.TUser[i].fk_user+']').length == 0)
 						{
-							tabUser.append('<li class="'+TClassRow[j]+'" data-fk-user="'+data.TUser[i].fk_user+'">'+data.TUser[i].username+'</li>');
+							tabUser.append('<li class="'+TClassRow[j]+'" data-fk-user="'+data.TUser[i].fk_user+'">'+data.TUser[i].userpicto+data.TUser[i].username+'</li>');
 							j = j ? 0 : 1;
 						}
 					}
@@ -272,6 +272,35 @@ $(function() {
 			
 			$('#birddytab-'+fk_user).trigger('click');
 		}
+		
+		function moveTab(direction) {
+			var tab = $('#birddy-tab-list');
+			
+			if (tab.data('currently-moving') == 0)
+			{
+				var pos = tab.css('left');
+				if (direction == 'right' && pos == '0px') return;
+				
+				tab.data('currently-moving', 1);
+				var move = '-=50px';
+				if (direction == 'right') move = '+=50';
+				
+				$('#birddy-tab-list').animate({left:move}, function() {
+					var newpos = tab.css('left'); 
+					if (newpos == '0px') $('#birddychat .birddy-move-tab.direction-left').fadeOut(200);
+					else $('#birddychat .birddy-move-tab.direction-left').fadeIn(200)
+					// TODO test if pos == end
+					
+					tab.data('currently-moving', 0); 
+				});
+			}
+			
+			return;
+		}
+		
+		$('#birddychat .birddy-move-tab').click(function(event) {
+			moveTab(event.target.dataset.direction);
+		});
 		
 	});
 	

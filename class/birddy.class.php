@@ -16,10 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+if (!defined('INC_FROM_DOLIBARR')) define('INC_FROM_DOLIBARR', true);
+require_once '../config.php';
+require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+
 class Birddy extends \WebSocket\Application\Application
 {
     private $_clients = array();
 	private $_filename = '';
+	
+	public $db;
+	public $showuserpicto = false;
+	
+	protected function __construct()
+	{
+		global $db,$conf;
+		
+		$this->db = &$db;
+		if (!empty($conf->global->BIRDDY_SHOW_USER_PICTO) && method_exists(Form, 'showphoto')) $this->showuserpicto = true;
+	}
 	
 	public function onConnect($client)
     {
@@ -126,10 +142,15 @@ class Birddy extends \WebSocket\Application\Application
 	
 	private function _actionSetUserToSocketClient($data, $client)
 	{
+		$u = new User($this->db);
+		$u->fetch($data['fk_user_origin']);
+					
 		$client->fk_user = $data['fk_user_origin'];
 		$client->username = $data['username'];
+		$client->userpicto = '';
+		if ($this->showuserpicto) $client->userpicto = Form::showphoto('userphoto', $u, 16, 0, 0, 'photologintooltip', 'mini', 0, 1);
 		
-		$this->_actionGetAllClient(null, $client);
+		$this->_actionGetAllClient($data, $client);
 	}
 	
 	private function _actionGetAllClient($data, $client)
@@ -140,7 +161,7 @@ class Birddy extends \WebSocket\Application\Application
 		{
 			if ($sendto->getClientId() !== $client->getClientId())
 			{
-				$Tab[] = array('fk_user' => $sendto->fk_user, 'username' => $sendto->username);
+				$Tab[] = array('fk_user' => $sendto->fk_user, 'username' => $sendto->username, 'userpicto' => $sendto->userpicto);
 			}
 		}
 

@@ -29,6 +29,7 @@
 	border-right:1px solid #d2d2d2;
 	border-left:1px solid #d2d2d2;
 	z-index:8010;
+	overflow:hidden;
 }
 
 #birddychat .lightblue {
@@ -140,16 +141,27 @@
 #birddytabuser li {
 	padding:4px 20px 2px 4px;
 	cursor:pointer;
+	word-wrap: break-word;
 }
+
+#birddytabuser li img {
+	margin:0 2px 0 0;
+	vertical-align:text-bottom;
+}
+
 #birddytabuser li:hover {
 	background:rgb(217, 224, 231) none repeat scroll 0 0 !important
 }
 
 #birddy-tab-list {
 	margin:0;
-	padding:0 2px;
+	padding:0 10px;
 	list-style-type:none;
-	border-bottom:#ddd
+	border-bottom:#ddd;
+	position:relative;
+	left:0;
+	overflow:hidden;
+	z-index:8040;
 }
 
 #birddy-tab-list li {
@@ -170,11 +182,13 @@
 #birddy-tab {
 	height:80%;
 	width:100%;
+	position:relative;
+	margin:3px 0 0 0;
 }
 
 #birddy-tab-container {
 	overflow:auto;
-	height:94%;
+	height:93%;
 	width:100%;
 }
 
@@ -198,4 +212,24 @@
 
 #birddy-tab-container .birddylog p.blue {
 	color:blue;
+}
+
+#birddy-tab .birddy-move-tab {
+	position:absolute;
+	top:0;
+	cursor:pointer;
+	z-index:8050;
+	background:#e7e7e7;
+	height:22px;
+	line-height:22px;
+	width:11px;
+	/*display:none;*/
+}
+
+#birddy-tab .birddy-move-tab.direction-left {
+	left:0;
+}
+
+#birddy-tab .birddy-move-tab.direction-right {
+	right:0;
 }

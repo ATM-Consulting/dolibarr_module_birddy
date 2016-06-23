@@ -6,7 +6,10 @@ ATMAbout = This module has been developed by <a href="http://www.atm-consulting.
 birddySetup = birddy module setup
 birddyAbout = About birddy
 
+# CONFIGURATION
+BIRDDY_SHOW_USER_PICTO=Show user picture in the chat room (need restart server)
 
+# CHAT
 birddy_say=say:
 birddy_You=You
 
