@@ -75,6 +75,23 @@ if (preg_match('/del_(.*)/',$action,$reg))
 	}
 }
 
+if ($action == 'launch_daemon')
+{
+	$return_var = 0;
+	
+	$dir = dol_buildpath('/birddy/script/daemon.php');
+	system('sh '.dol_buildpath('/birddy/script/launcher.sh').' "'.$dir.'"', $return_var);
+	
+	if ($return_var == 0)
+	{
+		setEventMessages($langs->trans('birddy_daemon_started'), array());
+	}
+	else
+	{
+		setEventMessages($langs->trans('birddy_daemon_launch_error', $return_var), array(), 'errors');
+	}
+}
+
 /*
  * View
  */
@@ -147,7 +164,17 @@ print '</form>';
 print '</td></tr>';
 
 
-print '</table><br />';
+print '</table>';
+
+
+print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+print '<input type="hidden" name="action" value="launch_daemon">';
+print '<div class="tabsAction">';
+print '<input type="submit" class="button" value="'.$langs->trans("birddy_Launch_daemon").'">';
+print '</div>';
+print '</form><br />';
+
 
 // # Conf chat
 $var=false;
