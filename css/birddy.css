@@ -155,7 +155,7 @@
 
 #birddy-tab-list {
 	margin:0;
-	padding:0 10px;
+	padding:0 10px 0 12px;
 	list-style-type:none;
 	border-bottom:#ddd;
 	position:relative;
@@ -173,6 +173,7 @@
     margin-right: 3px;
     padding: 4px 4px 2px;
     cursor:pointer;
+    font-size:12px;
 }
 
 #birddy-tab-list li.active {
@@ -220,10 +221,10 @@
 	cursor:pointer;
 	z-index:8050;
 	background:#e7e7e7;
-	height:22px;
+	height:21px;
 	line-height:22px;
 	width:11px;
-	/*display:none;*/
+	display:none;
 }
 
 #birddy-tab .birddy-move-tab.direction-left {

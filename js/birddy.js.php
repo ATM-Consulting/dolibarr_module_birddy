@@ -241,15 +241,22 @@ $(function() {
 		function openChat(username, fk_user) {
 			if ($('#birddytab-'+fk_user).length == 0)
 			{
-				var shortName = username;
+				var tablist = $('#birddy-tab-list')
+					,shortName = username;
 				if (shortName.length > 8) shortName = shortName.substring(0, 8)+'...';
 				var li = $('<li id="birddytab-'+fk_user+'" data-fk-user="'+fk_user+'" class="birddytab" title="'+username+'">'+shortName+' <i class="birddy-close-tab fa fa-times" data-fk-user="'+fk_user+'" title="<?php echo $langs->trans('birddy_close_tab'); ?>"></i></li>');
 				var log = $('<div id="birddylog-'+fk_user+'" data-fk-user="'+fk_user+'" class="birddylog"></div>');
+				console.log(tablist.width());
+				tablist.append(li);
 				
-				$('#birddy-tab-list').append(li);
-				$('#birddy-tab-container').append(log)	
+				tablist.width(tablist.width()+li.outerWidth());
+				tablist.data('nb-element', tablist.data('nb-element')+1);
+				
+				if (tablist.data('nb-element') > 3) $('#birddychat .birddy-move-tab.direction-right').fadeIn(200);
+				$('#birddy-tab-container').append(log);
 			}
 			
+			// TODO à vérifier mais le reste du code de cette fonction devrait être dans le if du dessus
 			$('#birddy-tab-list li').unbind().bind('click', function(event) {
 				// Select the tab
 				$('#birddy-tab-list li.active').removeClass('active');
@@ -262,11 +269,16 @@ $(function() {
 			
 			$('#birddychat .birddy-close-tab').unbind().bind('click', function(event) {
 				var fk_user = event.target.dataset.fkUser
-					,otherTab = $('#birddytab-'+fk_user).prev();
+					,otherTab = $('#birddytab-'+fk_user).prev()
+					,tablist = $('#birddy-tab-list')
+					,width = $('#birddytab-'+fk_user).outerWidth();
 				
 				if (otherTab.length == 0) otherTab = $('#birddytab-'+fk_user).next();
 				
 				$('#birddytab-'+fk_user+', #birddylog-'+fk_user).remove();
+				
+				tablist.width(tablist.width()-width);
+				tablist.data('nb-element', tablist.data('nb-element')-1);
 				
 				setTimeout(function() {
 					otherTab.trigger('click');
@@ -277,22 +289,36 @@ $(function() {
 		}
 		
 		function moveTab(direction) {
-			var tab = $('#birddy-tab-list');
+			var tab = $('#birddy-tab-list')
+				,nb_element_visible_at_start = 3;
 			
 			if (tab.data('currently-moving') == 0)
 			{
-				var pos = tab.css('left');
-				if (direction == 'right' && pos == '0px') return;
+				var pos = tab.data('current-pos')
+					,nb_element = tab.data('nb-element');
+					
+					console.log(pos, nb_element, direction);
+					
+				if (direction == 'right' && pos == 0) return;
+				else if (direction == 'left' && pos >= nb_element - nb_element_visible_at_start) return;
 				
 				tab.data('currently-moving', 1);
-				var move = '-=50px';
-				if (direction == 'right') move = '+=50';
+				
+				var move;
+				if (direction == 'right') { 
+					move = '+=50';
+					tab.data('current-pos', --pos)
+				} else {
+					tab.data('current-pos', ++pos)
+					move = '-=50px';
+				}
 				
 				$('#birddy-tab-list').animate({left:move}, function() {
-					var newpos = tab.css('left'); 
-					if (newpos == '0px') $('#birddychat .birddy-move-tab.direction-left').fadeOut(200);
-					else $('#birddychat .birddy-move-tab.direction-left').fadeIn(200)
-					// TODO test if pos == end
+					if (pos == 0) $('#birddychat .birddy-move-tab.direction-left').fadeOut(200);
+					else $('#birddychat .birddy-move-tab.direction-left').fadeIn(200);
+					
+					if (pos >= nb_element - nb_element_visible_at_start) $('#birddychat .birddy-move-tab.direction-right').fadeOut(200);
+					else $('#birddychat .birddy-move-tab.direction-right').fadeIn(200);
 					
 					tab.data('currently-moving', 0); 
 				});
