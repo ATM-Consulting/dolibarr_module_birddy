@@ -23,13 +23,28 @@
 	error_reporting(E_ALL);	
 //}
 
+chdir(__DIR__);
+
 DEFINE('INC_FROM_CRON_SCRIPT', true);
 require '../config.php';
 
-if (empty($conf->global->BIRDDY_SERVER_ADDR) || empty($conf->global->BIRDDY_PORT))
+$address = !empty($conf->global->BIRDDY_SERVER_ADDR) ? $conf->global->BIRDDY_SERVER_ADDR : '127.0.0.1';
+$port = !empty($conf->global->BIRDDY_PORT) ? $conf->global->BIRDDY_PORT : '8000';
+$TOrigin = !empty($conf->global->BIRDDY_ORIGINS_ALLOWED) ? explode(',', $conf->global->BIRDDY_ORIGINS_ALLOWED) : '';
+
+if (empty($address) || empty($port))
 {
 	echo 'Warning : server address or port is not configured';
 	exit;
+}
+
+if ($address == '127.0.0.1' && empty($TOrigin))
+{
+	$TOrigin = array('http://127.0.0.1', 'http://localhost');
+}
+elseif (empty($TOrigin))
+{
+	$TOrigin = array($address);
 }
 
 dol_include_once('/birddy/phpwebsocket/server/lib/SplClassLoader.php');
@@ -38,18 +53,20 @@ $classLoader->register();
 
 dol_include_once('/birddy/class/birddy.class.php');
 
-$server = new \WebSocket\Server($conf->global->BIRDDY_SERVER_ADDR, $conf->global->BIRDDY_PORT, false);
+$server = new \WebSocket\Server($address, $port, false);
 
 // TODO server settings: mettre les valeurs en conf
 $server->setMaxClients(100);
 $server->setCheckOrigin(true);
-$server->setAllowedOrigin('http://localhost'); // à appeler autant de fois que nécessaire pour autoriser +sieurs origines
+foreach ($TOrigin as $origin)
+{
+	if (!empty($origin)) $server->setAllowedOrigin($origin);
+}
 $server->setMaxConnectionsPerIp(100);
 $server->setMaxRequestsPerMinute(2000);
 
 // Hint: Status application should not be removed as it displays usefull server informations:
 //$server->registerApplication('status', \WebSocket\Application\StatusApplication::getInstance());
-//$server->registerApplication('birddy', \WebSocket\Application\DemoApplication::getInstance());
 $server->registerApplication('birddy', Birddy::getInstance());
 
 $server->run();

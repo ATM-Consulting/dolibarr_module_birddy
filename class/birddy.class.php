@@ -16,8 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-if (!defined('INC_FROM_DOLIBARR')) define('INC_FROM_DOLIBARR', true);
-require_once '../config.php';
 require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
 

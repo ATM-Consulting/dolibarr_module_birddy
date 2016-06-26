@@ -20,7 +20,10 @@
 //DEFINE('INC_FROM_DOLIBARR', true);
 require '../config.php';
 
-if (empty($conf->global->BIRDDY_SERVER_ADDR) || empty($conf->global->BIRDDY_PORT))
+$address = !empty($conf->global->BIRDDY_SERVER_ADDR) ? $conf->global->BIRDDY_SERVER_ADDR : '127.0.0.1';
+$port = !empty($conf->global->BIRDDY_PORT) ? $conf->global->BIRDDY_PORT : '8000';
+
+if (empty($address) || empty($port))
 {
 	exit;
 }
@@ -50,7 +53,7 @@ $(function() {
 			elBirddylog.scrollTop = elBirddylog.scrollHeight;
 		};
 		 
-		birddyServerUrl = 'ws://<?php echo $conf->global->BIRDDY_SERVER_ADDR.':'.$conf->global->BIRDDY_PORT; ?>/birddy';
+		birddyServerUrl = 'ws://<?php echo $address.':'.$port; ?>/birddy';
 		
 		try {
 			if (window.MozWebSocket) {
