@@ -97,7 +97,7 @@ $(function() {
 					payload = new Object();
 					payload.action = 'setUserToSocketClient';
 					payload.fk_user_origin = <?php echo (int) $user->id; ?>;
-					payload.username = '<?php echo $user->firstname.' '.$user->lastname; ?>';
+					payload.username = '<?php echo dolGetFirstLastname($user->firstname, $user->lastname); ?>';
 					birddySocket.send(JSON.stringify(payload));
 					
 					break;
@@ -141,18 +141,25 @@ $(function() {
 			}
 			else
 			{
-				var payload;
-				payload = new Object();
-				payload.action = 'getAllClient';
-				
-				birddySocket.send(JSON.stringify(payload));
-			
+				updateListUserConnected();
 				box.animate({right:"275px"}, callback).addClass("open");
 			}
 		}
 		
+		function updateListUserConnected() {
+			var payload;
+			payload = new Object();
+			payload.action = 'getAllClient';
+			
+			birddySocket.send(JSON.stringify(payload));
+		}
+		
 		$('#birddyshowclients').click(function(event) {
 			openOrCloseListUser();
+		});
+		
+		$('#birddytabuser-logo').click(function(event) {
+			updateListUserConnected();
 		});
 		
 		function minimizeChat(step) {

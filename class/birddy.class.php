@@ -142,7 +142,7 @@ class Birddy extends \WebSocket\Application\Application
 	{
 		$u = new User($this->db);
 		$u->fetch($data['fk_user_origin']);
-					
+		
 		$client->fk_user = $data['fk_user_origin'];
 		$client->username = $data['username'];
 		$client->userpicto = '';
@@ -162,8 +162,17 @@ class Birddy extends \WebSocket\Application\Application
 				$Tab[] = array('fk_user' => $sendto->fk_user, 'username' => $sendto->username, 'userpicto' => $sendto->userpicto);
 			}
 		}
-
+		
+		usort($Tab, array('Birddy', '_sortByUsername'));
+		
 		$client->send($this->_encodeData('returnGetAllClient', array('TUser'=>$Tab)));
+	}
+	
+	private static function _sortByUsername(&$a, &$b)
+	{
+		if ($a['username'] < $b['username']) return -1;
+		elseif ($a['username'] > $b['username']) return 1;
+		else return 0;
 	}
 	
 	private function _actionSetFilename($filename)

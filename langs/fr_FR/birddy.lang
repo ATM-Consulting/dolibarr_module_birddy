@@ -23,7 +23,7 @@ birddy_say=dit :
 birddy_You=Vous
 
 birddy_show_users=Afficher les utilisateurs joignables
-birddy_speakwith=Parler avec...
+birddy_click_to_refresh=Cliquez pour rafraichir la liste
 birddy_close_tab=Fermer l'onglet
 
 # SERVER LAUNCHER

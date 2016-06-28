@@ -18,8 +18,9 @@
  */
  
  require '../config.php';
+ dol_include_once('/core/lib/functions.lib.php');
  $langs->load('birddy@birddy');
- 
+
  ?>
  
 <div id="birddychat">
@@ -27,7 +28,7 @@
 	<input id="birddyclientid" type="hidden" value="" />
 	
 	<i id="birddyshowclients" class=" fa fa-user-plus" aria-hidden="true" title="<?php echo $langs->transnoentitiesnoconv('birddy_show_users'); ?>"></i>
-	<i id="birddy-reduce-window" class="fa fa-minus-square-o" aria-hidden="true" title="<?php echo $langs->transnoentitiesnoconv('birddy_reduce_box'); ?>"></i>
+	<i id="birddy-reduce-window" class="fa fa-minus-square-o" aria-hidden="true"></i>
 
 	
 	<i id="birddystatus" class="offline fa fa-circle" aria-hidden="true"></i>
@@ -65,7 +66,7 @@
 </div>
 
 <div id="birddytabuser-container">
-	<i id="birddytabuser-logo" class="fa fa-users" aria-hidden="true" title="<?php echo $langs->trans('birddy_speakwith'); ?>"></i>
+	<i id="birddytabuser-logo" class="fa fa-users" aria-hidden="true" title="<?php echo $langs->transnoentitiesnoconv('birddy_click_to_refresh'); ?>"></i>
 	<ul id="birddytabuser"></ul>
 </div>
 	
