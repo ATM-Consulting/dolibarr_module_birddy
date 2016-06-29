@@ -11,14 +11,16 @@ birddy_ServerParameters=Server parameters
 BIRDDY_SERVER_ADDR=Server address (default: localhost)
 BIRDDY_PORT=Allowed port (default: 8000)
 BIRDDY_ORIGINS_ALLOWED=Type the domains names allowed
-BIRDDY_ORIGINS_ALLOWED_help_info=Type the allowed domains separated by "," who can connect<br />&nbsp;&nbsp;- If <b>Server address</b> and <b>this field</b> are empties the default value is: http://127.0.0.1,http://localhost<br />&nbsp;&nbsp;- If <b>Server address</b> is fill and not this one then default value is <b>server's address value</b><br /><br />For example: your Dolibarr url is <b>http://foo.bar/htdocs</b> then type <b>http://foo.bar</b> 
+BIRDDY_ORIGINS_ALLOWED_help_info=Type the allowed domains separated by "," who can connect<br />&nbsp;&nbsp;- If <b>Server address</b> and <b>this field</b> are empties the default value is: http://127.0.0.1,http://localhost<br />&nbsp;&nbsp;- If <b>Server address</b> is fill and not this one then default value is <b>server's address value</b><br /><br />For example: your Dolibarr url is <b>http://foo.bar/htdocs</b> then type <b>http://foo.bar</b>
 birddy_Launch_daemon=Launch daemon
 
 # CHAT CONFIGURATION
 birddy_ChatParameters=Chat parameters
 BIRDDY_SHOW_USER_PICTO=Show user picture in the chat room (need restart server)
+BIRDDY_USER_CAN_SPEAK_WITH_OTHER_ENTITY=Users can speak with others entities
 
 # CHAT
+birddy_System=Info system:
 birddy_say=say:
 birddy_You=You
 
@@ -29,3 +31,7 @@ birddy_close_tab=Close tab
 # SERVER LAUNCHER
 birddy_daemon_started=Daemon started successfully
 birddy_daemon_launch_error=Daemon goes probably wrong with error code: %d
+
+# SYSTEM INFO
+birddy_UNEXPECTED_ERROR=Unexpected error
+birddy_CANT_ANSWER_FROM_ENTITY_ZERO=You try to answer to super administrator but you are not allowed to do this

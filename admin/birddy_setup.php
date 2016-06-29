@@ -192,6 +192,14 @@ print '<td align="right" width="300">';
 print ajax_constantonoff('BIRDDY_SHOW_USER_PICTO');
 print '</td></tr>';
 
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("BIRDDY_USER_CAN_SPEAK_WITH_OTHER_ENTITY").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="right" width="300">';
+print ajax_constantonoff('BIRDDY_USER_CAN_SPEAK_WITH_OTHER_ENTITY');
+print '</td></tr>';
+
 print '</table>';
 
 llxFooter();

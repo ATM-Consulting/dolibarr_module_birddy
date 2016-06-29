@@ -217,6 +217,12 @@
 #birddy-tab-container .birddylog p {
 	margin:0;
 	padding:0 2px;
+	word-break:break-word;
+}
+
+#birddy-tab-container .birddylog p.system {
+	font-weight:bold;
+	font-style:italic;
 }
 
 #birddy-tab-container .birddylog p:first-child{

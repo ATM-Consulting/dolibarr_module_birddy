@@ -25,14 +25,20 @@ class Birddy extends \WebSocket\Application\Application
 	private $_filename = '';
 	
 	public $db;
+	public $langs;
 	public $showuserpicto = false;
+	public $speak_with_entities = false;
 	
 	protected function __construct()
 	{
-		global $db,$conf;
+		global $db,$conf,$langs;
 		
+		$langs->load('birddy@birddy');
+
 		$this->db = &$db;
+		$this->langs = &$langs;
 		if (!empty($conf->global->BIRDDY_SHOW_USER_PICTO) && method_exists(Form, 'showphoto')) $this->showuserpicto = true;
+		if (!empty($conf->global->BIRDDY_USER_CAN_SPEAK_WITH_OTHER_ENTITY)) $this->speak_with_entities = true;
 	}
 	
 	public function onConnect($client)
@@ -120,32 +126,62 @@ class Birddy extends \WebSocket\Application\Application
 		return $decodedData;
 	}
 	
-	private function _actionEcho($data)
+	private function _actionEcho($data, $client)
 	{
 		if (empty($data['msg']) || empty($data['fk_user_target']) || empty($data['fk_user_origin'])) return false;
-		
+
 		$encodedData = $this->_encodeData('echo', $data);
 		foreach($this->_clients as $sendto)
 		{
 			if (!empty($data['fk_user_target']))
 			{
+				// TODO ajouter un test dans la condition qui permet d'autoriser la réponse à un super admin via conf module
+				if (!$this->speak_with_entities && $sendto->fk_entity == 0 && $sendto->fk_user == $data['fk_user_target'])
+				{
+					$this->_systemEcho($client, $data['fk_user_target'],'CANT_ANSWER_FROM_ENTITY_ZERO');
+					break;
+				}
+
+				if (!$this->speak_with_entities && $sendto->fk_entity != $client->fk_entity && $client->fk_entity != 0) continue;
 				if (in_array($sendto->fk_user, array($data['fk_user_target'], $data['fk_user_origin']))) $sendto->send($encodedData);
 			}
 			else
 			{
+				// TODO ajouter une condition pour passer par là qui permet à un admin d'envoyer un message de rappel à tous le monde
 				$sendto->send($encodedData);
 			}
         }
+
+
+	}
+
+	private function _systemEcho($client, $fk_user_target, $error_code)
+	{
+		$data = array('action' => 'systemEcho', 'fk_user_target' => $fk_user_target, 'fk_user_origin' => $fk_user_target);
+
+		switch($error_code) {
+			case 'CANT_ANSWER_FROM_ENTITY_ZERO':
+				$data['msg'] = $this->langs->trans('birddy_CANT_ANSWER_FROM_ENTITY_ZERO');
+				break;
+
+			default:
+				$data['msg'] = $this->langs->trans('birddy_UNEXPECTED_ERROR');
+				break;
+		}
+		
+		$client->send($this->_encodeData('systemEcho', $data));
 	}
 	
 	private function _actionSetUserToSocketClient($data, $client)
 	{
 		$u = new User($this->db);
 		$u->fetch($data['fk_user_origin']);
-		
+
 		$client->fk_user = $data['fk_user_origin'];
 		$client->username = $data['username'];
 		$client->userpicto = '';
+		$client->fk_entity = $u->entity;
+
 		if ($this->showuserpicto) $client->userpicto = Form::showphoto('userphoto', $u, 16, 0, 0, 'photologintooltip', 'mini', 0, 1);
 		
 		$this->_actionGetAllClient($data, $client);
@@ -157,6 +193,7 @@ class Birddy extends \WebSocket\Application\Application
 		
 		foreach ($this->_clients as $sendto)
 		{
+			if (!$this->speak_with_entities && $sendto->fk_entity != $client->fk_entity && $client->fk_entity != 0) continue;
 			if ($sendto->getClientId() !== $client->getClientId())
 			{
 				$Tab[] = array('fk_user' => $sendto->fk_user, 'username' => $sendto->username, 'userpicto' => $sendto->userpicto);
@@ -176,7 +213,7 @@ class Birddy extends \WebSocket\Application\Application
 	}
 	
 	private function _actionSetFilename($filename)
-	{		
+	{
 		if(strpos($filename, '\\') !== false)
 		{
 			$filename = substr($filename, strrpos($filename, '\\')+1);
@@ -184,8 +221,8 @@ class Birddy extends \WebSocket\Application\Application
 		elseif(strpos($filename, '/') !== false)
 		{
 			$filename = substr($filename, strrpos($filename, '/')+1);
-		}		
-		if(!empty($filename)) 
+		}
+		if(!empty($filename))
 		{
 			$this->_filename = $filename;
 			return true;

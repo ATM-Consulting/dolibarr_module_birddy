@@ -44,7 +44,7 @@ $(function() {
 			else fk_user = data.fk_user_origin;
 			
 			var elBirddylog = $('#birddylog-'+fk_user);
-			if (elBirddylog.length == 0) { 
+			if (elBirddylog.length == 0) {
 				openChat(data.username_origin, fk_user);
 				elBirddylog = $(elBirddylog.selector);
 			}
@@ -60,7 +60,7 @@ $(function() {
 				birddySocket = new MozWebSocket(birddyServerUrl);
 			} else if (window.WebSocket) {
 				birddySocket = new WebSocket(birddyServerUrl);
-			}	
+			}
 		} catch (error) {
 			console.log(error);
 			return;
@@ -74,7 +74,7 @@ $(function() {
 		
 		birddySocket.onmessage = function(event) {
 			var data = JSON.parse(event.data);
-			
+
 			switch (data.action) {
 				case 'echo':
 					if (<?php echo (int) $user->id; ?> == data.fk_user_origin)
@@ -85,7 +85,7 @@ $(function() {
 					else
 					{
 						birddylog(data, data.username_origin, "lightred bold");
-						birddylog(data, "<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg, "lightred");	
+						birddylog(data, "<?php echo $langs->transnoentities('birddy_say'); ?> " + data.msg, "lightred");
 					}
 
 					break;
@@ -121,6 +121,12 @@ $(function() {
 						openChat(event.target.textContent, event.target.dataset.fkUser);
 					});
 					
+					break;
+
+				case 'systemEcho':
+					console.log(data);
+					birddylog(data, "<?php echo $langs->transnoentities('birddy_System'); ?> " + data.msg, "system");
+
 					break;
 			}
 			
@@ -253,7 +259,7 @@ $(function() {
 				if (shortName.length > 8) shortName = shortName.substring(0, 8)+'...';
 				var li = $('<li id="birddytab-'+fk_user+'" data-fk-user="'+fk_user+'" class="birddytab" title="'+username+'">'+shortName+' <i class="birddy-close-tab fa fa-times" data-fk-user="'+fk_user+'" title="<?php echo $langs->trans('birddy_close_tab'); ?>"></i></li>');
 				var log = $('<div id="birddylog-'+fk_user+'" data-fk-user="'+fk_user+'" class="birddylog"></div>');
-				console.log(tablist.width());
+				
 				tablist.append(li);
 				
 				tablist.width(tablist.width()+li.outerWidth());
@@ -303,8 +309,6 @@ $(function() {
 			{
 				var pos = tab.data('current-pos')
 					,nb_element = tab.data('nb-element');
-					
-					console.log(pos, nb_element, direction);
 					
 				if (direction == 'right' && pos == 0) return;
 				else if (direction == 'left' && pos >= nb_element - nb_element_visible_at_start) return;
