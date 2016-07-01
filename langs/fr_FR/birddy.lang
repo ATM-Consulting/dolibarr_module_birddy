@@ -18,6 +18,7 @@ birddy_Launch_daemon=Démarrer le serveur
 birddy_ChatParameters=Parametres du chat
 BIRDDY_SHOW_USER_PICTO=Afficher l'image de l'utilisateur dans la fenêtre de conversation (nécessite le redémarrage du serveur)
 BIRDDY_USER_CAN_SPEAK_WITH_OTHER_ENTITY=Les utilisateurs peuvent discuter avec les autres entités
+BIRDDY_USER_CAN_SPEAK_WITH_ENTITY_ZERO=Les utilisateurs peuvent répondre à un super admin (entité est à 0)
 
 # CHAT
 birddy_System=Info système :
@@ -35,3 +36,4 @@ birddy_daemon_launch_error=Erreur durant le lancement du script avec comme code 
 # SYSTEM INFO
 birddy_UNEXPECTED_ERROR=Erreur inattendue
 birddy_CANT_ANSWER_FROM_ENTITY_ZERO=Vous essayez de répondre à un super administrateur mais vous n'êtes pas autorisé à le faire
+birddy_CANT_ANSWER_FROM_DIFFRENT_ENTITY=Vous ne pouvez pas discuter avec un utilisateur d'une autre entité

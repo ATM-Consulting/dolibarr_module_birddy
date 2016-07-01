@@ -18,6 +18,7 @@ birddy_Launch_daemon=Launch daemon
 birddy_ChatParameters=Chat parameters
 BIRDDY_SHOW_USER_PICTO=Show user picture in the chat room (need restart server)
 BIRDDY_USER_CAN_SPEAK_WITH_OTHER_ENTITY=Users can speak with others entities
+BIRDDY_USER_CAN_SPEAK_WITH_ENTITY_ZERO=Users can answer to super admin (entity 0)
 
 # CHAT
 birddy_System=Info system:
@@ -35,3 +36,4 @@ birddy_daemon_launch_error=Daemon goes probably wrong with error code: %d
 # SYSTEM INFO
 birddy_UNEXPECTED_ERROR=Unexpected error
 birddy_CANT_ANSWER_FROM_ENTITY_ZERO=You try to answer to super administrator but you are not allowed to do this
+birddy_CANT_ANSWER_FROM_DIFFRENT_ENTITY=You can't speak with user come from other entity

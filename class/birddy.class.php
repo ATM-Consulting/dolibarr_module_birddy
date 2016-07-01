@@ -28,6 +28,7 @@ class Birddy extends \WebSocket\Application\Application
 	public $langs;
 	public $showuserpicto = false;
 	public $speak_with_entities = false;
+	public $answer_entity_zero_is_allow = false;
 	
 	protected function __construct()
 	{
@@ -39,6 +40,7 @@ class Birddy extends \WebSocket\Application\Application
 		$this->langs = &$langs;
 		if (!empty($conf->global->BIRDDY_SHOW_USER_PICTO) && method_exists(Form, 'showphoto')) $this->showuserpicto = true;
 		if (!empty($conf->global->BIRDDY_USER_CAN_SPEAK_WITH_OTHER_ENTITY)) $this->speak_with_entities = true;
+		if (!empty($conf->global->BIRDDY_USER_CAN_SPEAK_WITH_ENTITY_ZERO)) $this->answer_entity_zero_is_allow = true;
 	}
 	
 	public function onConnect($client)
@@ -135,15 +137,16 @@ class Birddy extends \WebSocket\Application\Application
 		{
 			if (!empty($data['fk_user_target']))
 			{
-				// TODO ajouter un test dans la condition qui permet d'autoriser la réponse à un super admin via conf module
-				if (!$this->speak_with_entities && $sendto->fk_entity == 0 && $sendto->fk_user == $data['fk_user_target'])
+				$can_speak = $this->_checkIfUserCanSpeak($client, $sendto, $data);
+				
+				if ($can_speak === true) $sendto->send($encodedData);
+				elseif ($can_speak === false) continue;
+				elseif (!empty($can_speak))
 				{
-					$this->_systemEcho($client, $data['fk_user_target'],'CANT_ANSWER_FROM_ENTITY_ZERO');
+					// $can_speak contain error code
+					$this->_systemEcho($client, $data['fk_user_target'], $can_speak);
 					break;
 				}
-
-				if (!$this->speak_with_entities && $sendto->fk_entity != $client->fk_entity && $client->fk_entity != 0) continue;
-				if (in_array($sendto->fk_user, array($data['fk_user_target'], $data['fk_user_origin']))) $sendto->send($encodedData);
 			}
 			else
 			{
@@ -155,6 +158,27 @@ class Birddy extends \WebSocket\Application\Application
 
 	}
 
+	private function _checkIfUserCanSpeak(&$client, &$sendto, &$data)
+	{
+		// Target user sould be the user who I want to speak
+		if ($sendto->fk_user == $data['fk_user_target'])
+		{
+			// If user come from entity 0 he can speak with everybody
+			if ($client->fk_entity != 0)
+			{
+				// Case 1: target user come from entity 0 then the conf to speak with entity 0 must be enable
+				if ($sendto->fk_entity == 0 && !$this->answer_entity_zero_is_allow) return 'CANT_ANSWER_FROM_ENTITY_ZERO';
+				// Case 2: target user come from different entity then the conf to speak with all entites must be enable
+				if ($sendto->fk_entity != 0 && $client->fk_entity != $sendto->fk_entity && !$this->speak_with_entities) return 'CANT_ANSWER_FROM_DIFFRENT_ENTITY';	
+			}
+			
+			return true;
+		}
+		elseif ($sendto->fk_user == $data['fk_user_origin']) return true;
+
+		return false;
+	}
+
 	private function _systemEcho($client, $fk_user_target, $error_code)
 	{
 		$data = array('action' => 'systemEcho', 'fk_user_target' => $fk_user_target, 'fk_user_origin' => $fk_user_target);
@@ -164,6 +188,10 @@ class Birddy extends \WebSocket\Application\Application
 				$data['msg'] = $this->langs->trans('birddy_CANT_ANSWER_FROM_ENTITY_ZERO');
 				break;
 
+			case 'CANT_ANSWER_FROM_DIFFRENT_ENTITY':
+				$data['msg'] = $this->langs->trans('birddy_CANT_ANSWER_FROM_DIFFRENT_ENTITY');
+				break;
+			
 			default:
 				$data['msg'] = $this->langs->trans('birddy_UNEXPECTED_ERROR');
 				break;
