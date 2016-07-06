@@ -12,7 +12,9 @@ BIRDDY_SERVER_ADDR=Adresse serveur (défaut : localhost)
 BIRDDY_PORT=Port autorisé (défaut : 8000)
 BIRDDY_ORIGINS_ALLOWED=Précisez le/les noms de domaines autorisés
 BIRDDY_ORIGINS_ALLOWED_help_info=Renseignez les noms autorisés à se connecter séparé d'une "," (virgule)<br />&nbsp;&nbsp;- Si <b>Adresse serveur</b> et que <b>ce champ</b> sont vides, la valeur par défaut est : http://127.0.0.1,http://localhost<br />&nbsp;&nbsp;- Si <b>Adresse serveur</b> est renseigné mais pas celui-ci alors la valeur par défaut est celle de <b>Adresse serveur</b><br /><br />Example : l'url de votre Dolibarr est <b>http://mondomaine.fr/htdocs</b> alors renseignez <b>http://mondomaine.fr</b>
-birddy_Launch_daemon=Démarrer le serveur
+birddy_Start_daemon=Démarrer le serveur
+birddy_Stop_daemon=Arrêter le serveur
+birddy_Restart_daemon=Redémarrer le serveur
 
 # CHAT CONFIGURATION
 birddy_ChatParameters=Parametres du chat
@@ -30,8 +32,12 @@ birddy_click_to_refresh=Cliquez pour rafraichir la liste
 birddy_close_tab=Fermer l'onglet
 
 # SERVER LAUNCHER
-birddy_daemon_started=Script démarré avec succès
-birddy_daemon_launch_error=Erreur durant le lancement du script avec comme code en retour : %d
+birddy_start_server=Serveur démarré
+birddy_stop_server=Serveur arrêté
+birddy_restart_server=Serveur redémarrer
+birddy_error_start_daemon=Erreur: impossible de démarrer le serveur. Le serveur est déjà démarré ou vérifiez les permissions de lecture et d'écriture des dossiers "birddy/script/run" and "birddy/script/log" pour l'utilisateur "www-data"
+birddy_error_stop_daemon=Erreur: impossible d'arrêter le serveur ou serveur déjà arrêté
+birddy_error_restart_daemon=Erreur: impossible de redémarrer le serveur
 
 # SYSTEM INFO
 birddy_UNEXPECTED_ERROR=Erreur inattendue

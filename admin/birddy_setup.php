@@ -75,21 +75,41 @@ if (preg_match('/del_(.*)/',$action,$reg))
 	}
 }
 
-if ($action == 'launch_daemon')
+if (in_array($action, array('start_daemon', 'stop_daemon', 'restart_daemon')))
 {
+	$output = array();
 	$return_var = 0;
 	
 	$dir = dol_buildpath('/birddy/script/daemon.php');
-	system('sh '.dol_buildpath('/birddy/script/launcher.sh').' "'.$dir.'"', $return_var);
+	$dir = dirname($dir);
 	
-	if ($return_var == 0)
-	{
-		setEventMessages($langs->trans('birddy_daemon_started'), array());
+	switch ($action) {
+		case 'start_daemon':
+			exec('sh '.dol_buildpath('/birddy/script/launcher.sh').' start '.$dir, $output, $return_var);
+			break;
+		case 'stop_daemon':
+			exec('sh '.dol_buildpath('/birddy/script/launcher.sh').' stop '.$dir, $output, $return_var);
+			break;
+		case 'restart_daemon':
+			exec('sh '.dol_buildpath('/birddy/script/launcher.sh').' restart '.$dir, $output, $return_var);
+			break;
+		
+		default:
+			$return_var = -1;
+			break;
 	}
-	else
+	
+	if (!empty($output) && $return_var == 0)
 	{
-		setEventMessages($langs->trans('birddy_daemon_launch_error', $return_var), array(), 'errors');
+		setEventMessages('', $output);
 	}
+	elseif ($return_var > 0)
+	{
+		setEventMessages('birddy_error_'.$action, array(), 'errors');
+	}
+
+	header('Location: '.dol_buildpath('/birddy/admin/birddy_setup.php', 2));
+	exit;
 }
 
 /*
@@ -166,15 +186,23 @@ print '</td></tr>';
 
 print '</table>';
 
-
-print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
-print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-print '<input type="hidden" name="action" value="launch_daemon">';
 print '<div class="tabsAction">';
-print '<input type="submit" class="button" value="'.$langs->trans("birddy_Launch_daemon").'">';
-print '</div>';
-print '</form><br />';
 
+print '<div class="inline-block divButAction">';
+print '<a href="'.dol_buildpath('/birddy/admin/birddy_setup.php', 1).'?action=start_daemon" class="butAction">'.$langs->trans("birddy_Start_daemon").'</a>';
+print '</div>';
+
+print '<div class="inline-block divButAction">';
+print '<a href="'.dol_buildpath('/birddy/admin/birddy_setup.php', 1).'?action=stop_daemon" class="butActionDelete">'.$langs->trans("birddy_Stop_daemon").'</a>';
+print '</div>';
+
+print '<div class="inline-block divButAction">';
+print '<a href="'.dol_buildpath('/birddy/admin/birddy_setup.php', 1).'?action=restart_daemon" class="butActionDelete">'.$langs->trans("birddy_Restart_daemon").'</a>';
+print '</div>';
+		
+
+		
+print '</div>';
 
 // # Conf chat
 $var=false;

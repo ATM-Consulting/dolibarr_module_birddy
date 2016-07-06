@@ -12,7 +12,9 @@ BIRDDY_SERVER_ADDR=Server address (default: localhost)
 BIRDDY_PORT=Allowed port (default: 8000)
 BIRDDY_ORIGINS_ALLOWED=Type the domains names allowed
 BIRDDY_ORIGINS_ALLOWED_help_info=Type the allowed domains separated by "," who can connect<br />&nbsp;&nbsp;- If <b>Server address</b> and <b>this field</b> are empties the default value is: http://127.0.0.1,http://localhost<br />&nbsp;&nbsp;- If <b>Server address</b> is fill and not this one then default value is <b>server's address value</b><br /><br />For example: your Dolibarr url is <b>http://foo.bar/htdocs</b> then type <b>http://foo.bar</b>
-birddy_Launch_daemon=Launch daemon
+birddy_Start_daemon=Start daemon
+birddy_Stop_daemon=Stop daemon
+birddy_Restart_daemon=Restart daemon
 
 # CHAT CONFIGURATION
 birddy_ChatParameters=Chat parameters
@@ -30,8 +32,12 @@ birddy_click_to_refresh=Click to refresh list
 birddy_close_tab=Close tab
 
 # SERVER LAUNCHER
-birddy_daemon_started=Daemon started successfully
-birddy_daemon_launch_error=Daemon goes probably wrong with error code: %d
+birddy_start_server=Daemon started successfully
+birddy_stop_server=Daemon stopped successfully
+birddy_restart_server=Daemon restarted successfully
+birddy_error_start_daemon=Error: can't start daemon. Already running or check read and write permissions of "www-data" user on "birddy/script/run" and "birddy/script/log" folders
+birddy_error_stop_daemon=Error: can't stop daemon or already stopped
+birddy_error_restart_daemon=Error: can't restart daemon
 
 # SYSTEM INFO
 birddy_UNEXPECTED_ERROR=Unexpected error
