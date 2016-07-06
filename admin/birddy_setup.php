@@ -136,6 +136,10 @@ dol_fiche_head(
 // Setup page goes here
 $form=new Form($db);
 
+print '<div class="warning">';
+print ''; // TODO fournir les indications concernant les droits pour l'utilisateur www-data
+print '</div>';
+
 // # Conf server
 $var=false;
 print '<table class="noborder" width="100%">';
