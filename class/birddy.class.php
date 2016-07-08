@@ -221,7 +221,11 @@ class Birddy extends \WebSocket\Application\Application
 
 		foreach ($this->_clients as $sendto)
 		{
-			if (!$this->speak_with_entities && $sendto->fk_entity != $client->fk_entity && $client->fk_entity != 0) continue;
+			if (
+				(!$this->speak_with_entities && $sendto->fk_entity != $client->fk_entity && $client->fk_entity != 0)
+				&& (!$this->answer_entity_zero_is_allow && $client->fk_entity != 0 && $sendto->fk_entity == 0)
+			) continue;
+
 			if ($sendto->getClientId() !== $client->getClientId())
 			{
 				$Tab[] = array('fk_user' => $sendto->fk_user, 'username' => $sendto->username, 'userpicto' => $sendto->userpicto);
