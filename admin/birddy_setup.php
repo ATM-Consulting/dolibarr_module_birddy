@@ -60,13 +60,13 @@ if (preg_match('/set_(.*)/',$action,$reg))
 		dol_print_error($db);
 	}
 }
-	
+
 if (preg_match('/del_(.*)/',$action,$reg))
 {
 	$code=$reg[1];
 	if (dolibarr_del_const($db, $code, 0) > 0)
 	{
-		Header("Location: ".$_SERVER["PHP_SELF"]);
+		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	}
 	else
@@ -79,10 +79,10 @@ if (in_array($action, array('start_daemon', 'stop_daemon', 'restart_daemon')))
 {
 	$output = array();
 	$return_var = 0;
-	
+
 	$dir = dol_buildpath('/birddy/script/daemon.php');
 	$dir = dirname($dir);
-	
+
 	switch ($action) {
 		case 'start_daemon':
 			exec('sh '.dol_buildpath('/birddy/script/launcher.sh').' start '.$dir, $output, $return_var);
@@ -93,12 +93,11 @@ if (in_array($action, array('start_daemon', 'stop_daemon', 'restart_daemon')))
 		case 'restart_daemon':
 			exec('sh '.dol_buildpath('/birddy/script/launcher.sh').' restart '.$dir, $output, $return_var);
 			break;
-		
 		default:
 			$return_var = -1;
 			break;
 	}
-	
+
 	if (!empty($output) && $return_var == 0)
 	{
 		setEventMessages('', $output);
@@ -137,7 +136,7 @@ dol_fiche_head(
 $form=new Form($db);
 
 print '<div class="warning">';
-print ''; // TODO fournir les indications concernant les droits pour l'utilisateur www-data
+print $langs->trans('birddy_general_info_about_permissions'); // TODO fournir les indications concernant les droits pour l'utilisateur www-data
 print '</div>';
 
 // # Conf server
@@ -163,7 +162,7 @@ print '</td></tr>';
 
 $var=!$var;
 print '<tr '.$bc[$var].'>';
-print '<td>'.$langs->trans("BIRDDY_SERVER_ADDR").'</td>';
+print '<td>'.$langs->trans("BIRDDY_PORT").'</td>';
 print '<td align="center" width="20">&nbsp;</td>';
 print '<td align="right" width="300">';
 print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
@@ -187,8 +186,8 @@ print '&nbsp;<input type="submit" class="button" value="'.$langs->trans("Modify"
 print '</form>';
 print '</td></tr>';
 
-
 print '</table>';
+
 
 print '<div class="tabsAction">';
 
@@ -203,9 +202,7 @@ print '</div>';
 print '<div class="inline-block divButAction">';
 print '<a href="'.dol_buildpath('/birddy/admin/birddy_setup.php', 1).'?action=restart_daemon" class="butActionDelete">'.$langs->trans("birddy_Restart_daemon").'</a>';
 print '</div>';
-		
 
-		
 print '</div>';
 
 // # Conf chat

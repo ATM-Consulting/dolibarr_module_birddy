@@ -3,14 +3,24 @@
 NAME=birddydaemon
 DESC="Daemon chat server"
 DAEMONUSER="www-data"
+DIRSCRIPT="$(cd "$(dirname "$0")" && pwd)"
 
-#DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-DIR=$2
-PIDFILE="${DIR}/run/${NAME}.pid"
-LOGFILE="${DIR}/log/${NAME}.log"
+if [ -d "${DIRSCRIPT}/../../../../documents/birddy" ]; then
+    DIRDOCUMENTS="${DIRSCRIPT}/../../../../documents/birddy"
+elif [ -d "${DIRSCRIPT}/../../../documents/birddy" ]; then
+    DIRDOCUMENTS="${DIRSCRIPT}/../../../documents/birddy"
+fi
+
+if [ -z $DIRDOCUMENTS ]; then
+    echo "birddy folder not found in documents"
+    exit 1
+fi
+
+PIDFILE="${DIRDOCUMENTS}/run/${NAME}.pid"
+LOGFILE="${DIRDOCUMENTS}/log/${NAME}.log"
 
 DAEMON="/usr/bin/php"
-DAEMON_OPTS="${DIR}/daemon.php"
+DAEMON_OPTS="${DIRSCRIPT}/daemon.php"
 
 START_OPTS="--start --chuid ${DAEMONUSER} --background --make-pidfile --pidfile ${PIDFILE} --exec ${DAEMON} ${DAEMON_OPTS}"
 STOP_OPTS="--stop --pidfile ${PIDFILE}"

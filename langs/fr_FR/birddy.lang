@@ -7,6 +7,7 @@ birddySetup = Configuration du module birddy
 birddyAbout = A propos du module birddy
 
 # SERVER CONFIGURATION
+birddy_general_info_about_permissions=Attention aux permissions, vous trouverez les sous-dossiers "run" et "log" dans "script". L'utilisateur "www-data" doit avoir les permissions récursives d'écriture, licture et d'exécution sur ces dossiers ('chgrp www-data -R run', 'chgrp www-data -R log', 'chmod 774 -R run', 'chmod 774 -R log')
 birddy_ServerParameters=Parametres serveur
 BIRDDY_SERVER_ADDR=Adresse serveur (défaut : localhost)
 BIRDDY_PORT=Port autorisé (défaut : 8000)
