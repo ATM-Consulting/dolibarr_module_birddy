@@ -23,17 +23,17 @@ class Birddy extends \WebSocket\Application\Application
 {
     private $_clients = array();
 	private $_filename = '';
-	
+
 	public $db;
 	public $langs;
 	public $showuserpicto = false;
 	public $speak_with_entities = false;
 	public $answer_entity_zero_is_allow = false;
-	
+
 	protected function __construct()
 	{
 		global $db,$conf,$langs;
-		
+
 		$langs->load('birddy@birddy');
 
 		$this->db = &$db;
@@ -42,12 +42,12 @@ class Birddy extends \WebSocket\Application\Application
 		if (!empty($conf->global->BIRDDY_USER_CAN_SPEAK_WITH_OTHER_ENTITY)) $this->speak_with_entities = true;
 		if (!empty($conf->global->BIRDDY_USER_CAN_SPEAK_WITH_ENTITY_ZERO)) $this->answer_entity_zero_is_allow = true;
 	}
-	
+
 	public function onConnect($client)
     {
 		$id = $client->getClientId();
         $this->_clients[$id] = $client;
-		
+
 		$client->send($this->_encodeData('returnConnectId', array('connectId'=>$id)));
     }
 
@@ -65,29 +65,29 @@ class Birddy extends \WebSocket\Application\Application
 		{
 			// @todo: invalid request trigger error...
 		}
-		
+
 		// Propriétaire du message
 		$decodedData['fromClientId'] = $client->getClientId();
-		
+
 		$actionName = '_action' . ucfirst($decodedData['action']);
 		if(method_exists($this, $actionName))
 		{
 			call_user_func(array($this, $actionName), $decodedData, $client);
 		}
     }
-	
+
 	/*
 	public function onBinaryData($data, $client)
-	{		
+	{
 		$filePath = substr(__FILE__, 0, strpos(__FILE__, 'server')) . 'tmp/';
 		$putfileResult = false;
 		if(!empty($this->_filename))
 		{
 			$putfileResult = file_put_contents($filePath.$this->_filename, $data);
-		}		
+		}
 		if($putfileResult !== false)
 		{
-			
+
 			$msg = 'File received. Saved: ' . $this->_filename;
 		}
 		else
@@ -98,20 +98,20 @@ class Birddy extends \WebSocket\Application\Application
 		$this->_filename = '';
 	}
 	*/
-	
+
 	protected function _encodeData($action, $data)
 	{
 		if(empty($action))
 		{
 			return false;
 		}
-		
+
 		$payload = $data;
 		$payload['action'] = $action;
-		
+
 		return json_encode($payload);
 	}
-	
+
 	protected function _decodeData($data)
 	{
 		$decodedData = json_decode($data, true);
@@ -119,15 +119,15 @@ class Birddy extends \WebSocket\Application\Application
 		{
 			return false;
 		}
-		
+
 		if(empty($decodedData['action']))
 		{
 			return false;
 		}
-		
+
 		return $decodedData;
 	}
-	
+
 	private function _actionEcho($data, $client)
 	{
 		if (empty($data['msg']) || empty($data['fk_user_target']) || empty($data['fk_user_origin'])) return false;
@@ -138,7 +138,7 @@ class Birddy extends \WebSocket\Application\Application
 			if (!empty($data['fk_user_target']))
 			{
 				$can_speak = $this->_checkIfUserCanSpeak($client, $sendto, $data);
-				
+
 				if ($can_speak === true) $sendto->send($encodedData);
 				elseif ($can_speak === false) continue;
 				elseif (!empty($can_speak))
@@ -171,7 +171,7 @@ class Birddy extends \WebSocket\Application\Application
 				// Case 2: target user come from different entity then the conf to speak with all entites must be enable
 				if ($sendto->fk_entity != 0 && $client->fk_entity != $sendto->fk_entity && !$this->speak_with_entities) return 'CANT_ANSWER_FROM_DIFFRENT_ENTITY';	
 			}
-			
+
 			return true;
 		}
 		elseif ($sendto->fk_user == $data['fk_user_origin']) return true;
@@ -191,15 +191,15 @@ class Birddy extends \WebSocket\Application\Application
 			case 'CANT_ANSWER_FROM_DIFFRENT_ENTITY':
 				$data['msg'] = $this->langs->trans('birddy_CANT_ANSWER_FROM_DIFFRENT_ENTITY');
 				break;
-			
+
 			default:
 				$data['msg'] = $this->langs->trans('birddy_UNEXPECTED_ERROR');
 				break;
 		}
-		
+
 		$client->send($this->_encodeData('systemEcho', $data));
 	}
-	
+
 	private function _actionSetUserToSocketClient($data, $client)
 	{
 		$u = new User($this->db);
@@ -211,14 +211,14 @@ class Birddy extends \WebSocket\Application\Application
 		$client->fk_entity = $u->entity;
 
 		if ($this->showuserpicto) $client->userpicto = Form::showphoto('userphoto', $u, 16, 0, 0, 'photologintooltip', 'mini', 0, 1);
-		
+
 		$this->_actionGetAllClient($data, $client);
 	}
-	
+
 	private function _actionGetAllClient($data, $client)
 	{
 		$Tab = array();
-		
+
 		foreach ($this->_clients as $sendto)
 		{
 			if (!$this->speak_with_entities && $sendto->fk_entity != $client->fk_entity && $client->fk_entity != 0) continue;
@@ -227,19 +227,19 @@ class Birddy extends \WebSocket\Application\Application
 				$Tab[] = array('fk_user' => $sendto->fk_user, 'username' => $sendto->username, 'userpicto' => $sendto->userpicto);
 			}
 		}
-		
+
 		usort($Tab, array('Birddy', '_sortByUsername'));
-		
+
 		$client->send($this->_encodeData('returnGetAllClient', array('TUser'=>$Tab)));
 	}
-	
+
 	private static function _sortByUsername(&$a, &$b)
 	{
 		if ($a['username'] < $b['username']) return -1;
 		elseif ($a['username'] > $b['username']) return 1;
 		else return 0;
 	}
-	
+
 	private function _actionSetFilename($filename)
 	{
 		if(strpos($filename, '\\') !== false)
@@ -257,5 +257,5 @@ class Birddy extends \WebSocket\Application\Application
 		}
 		return false;
 	}
-	
+
 }

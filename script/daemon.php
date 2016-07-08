@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-//if (isset($_GET['DEBUG']))
-//{
+
+if (isset($_GET['DEBUG']))
+{
 	ini_set('display_errors', 1);
-	error_reporting(E_ALL);	
-//}
+	error_reporting(E_ALL);
+}
 
 chdir(__DIR__);
 
