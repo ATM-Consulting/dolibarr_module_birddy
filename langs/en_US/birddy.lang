@@ -7,7 +7,7 @@ birddySetup = birddy module setup
 birddyAbout = About birddy
 
 # SERVER CONFIGURATION
-birddy_general_info_about_permissions=Take care about permissions in this module you can find subfolders 'run' and 'log' into 'script'. The user 'www-data' must have recursive permissions to write and read and execute about them ('chgrp www-data -R run', 'chgrp www-data -R log', 'chmod 774 -R run', 'chmod 774 -R log')
+birddy_general_info_about_permissions=Take care about permissions in this module you can find subfolders 'run' and 'log' into 'documents'. The user 'www-data' must have recursive permissions to write and read and execute about them ('chgrp www-data -R run', 'chgrp www-data -R log', 'chmod 774 -R run', 'chmod 774 -R log')
 birddy_ServerParameters=Server parameters
 BIRDDY_SERVER_ADDR=Server address (default: localhost)
 BIRDDY_PORT=Allowed port (default: 8000)
