@@ -7,7 +7,7 @@ birddySetup = birddy module setup
 birddyAbout = About birddy
 
 # SERVER CONFIGURATION
-birddy_general_info_about_permissions=Take care about permissions in this module you can find subfolders 'run' and 'log' into 'documents'. The user 'www-data' must have recursive permissions to write and read and execute about them ('chgrp www-data -R run', 'chgrp www-data -R log', 'chmod 774 -R run', 'chmod 774 -R log')
+birddy_general_info_about_permissions=Take care about permissions in this module you can find subfolders 'run' and 'log' into 'documents'. The user 'www-data' must have recursive permissions to write and read and execute about them (from 'documents' directory do 'chgrp www-data -R run', 'chgrp www-data -R log', 'chmod 774 -R run', 'chmod 774 -R log')
 birddy_ServerParameters=Server parameters
 BIRDDY_SERVER_ADDR=Server address (default: localhost)
 BIRDDY_PORT=Allowed port (default: 8000)
@@ -22,6 +22,10 @@ birddy_ChatParameters=Chat parameters
 BIRDDY_SHOW_USER_PICTO=Show user picture in the chat room (need restart server)
 BIRDDY_USER_CAN_SPEAK_WITH_OTHER_ENTITY=Users can speak with others entities
 BIRDDY_USER_CAN_SPEAK_WITH_ENTITY_ZERO=Users can answer to super admin (entity 0)
+BIRDDY_ALLOW_SEND_FILE=Allow sending files
+BIRDDY_ALLOW_GROUP_CHAT=Allow to create group chat
+BIRDDY_KEEP_CHAT_HISTORY=Keep an history of each conversation
+BirddyFunctionNotAvailableYet=Function not available yet
 
 # CHAT
 birddy_System=Info system:

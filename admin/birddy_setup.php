@@ -237,6 +237,30 @@ print '<td align="right" width="300">';
 print ajax_constantonoff('BIRDDY_USER_CAN_SPEAK_WITH_ENTITY_ZERO');
 print '</td></tr>';
 
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$form->textwithpicto($langs->trans("BIRDDY_ALLOW_SEND_FILE"), $langs->transnoentities('BirddyFunctionNotAvailableYet')).'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="right" width="300">';
+//print ajax_constantonoff('BIRDDY_ALLOW_SEND_FILE');
+print '</td></tr>';
+
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$form->textwithpicto($langs->trans("BIRDDY_ALLOW_GROUP_CHAT"), $langs->transnoentities('BirddyFunctionNotAvailableYet')).'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="right" width="300">';
+//print ajax_constantonoff('BIRDDY_ALLOW_GROUP_CHAT');
+print '</td></tr>';
+
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$form->textwithpicto($langs->trans("BIRDDY_KEEP_CHAT_HISTORY"), $langs->transnoentities('BirddyFunctionNotAvailableYet')).'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="right" width="300">';
+//print ajax_constantonoff('BIRDDY_KEEP_CHAT_HISTORY');
+print '</td></tr>';
+
 
 print '</table>';
 
