@@ -11,6 +11,7 @@ birddy_general_info_about_permissions=Take care about permissions in this module
 birddy_ServerParameters=Server parameters
 BIRDDY_SERVER_ADDR=Server address (default: localhost)
 BIRDDY_PORT=Allowed port (default: 8000)
+BIRDDY_CHECK_ORIGIN=Enable the check access from the domain
 BIRDDY_ORIGINS_ALLOWED=Type the domains names allowed
 BIRDDY_ORIGINS_ALLOWED_help_info=Type the allowed domains separated by "," who can connect<br />&nbsp;&nbsp;- If <b>Server address</b> and <b>this field</b> are empties the default value is: http://127.0.0.1,http://localhost<br />&nbsp;&nbsp;- If <b>Server address</b> is fill and not this one then default value is <b>server's address value</b><br /><br />For example: your Dolibarr url is <b>http://foo.bar/htdocs</b> then type <b>http://foo.bar</b>
 birddy_Start_daemon=Start daemon

@@ -175,6 +175,14 @@ print '</td></tr>';
 
 $var=!$var;
 print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("BIRDDY_CHECK_ORIGIN").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="right" width="300">';
+print ajax_constantonoff('BIRDDY_CHECK_ORIGIN', array('showhide'=>array(0=>'#check_origin')));
+print '</td></tr>';
+
+$var=!$var;
+print '<tr id="check_origin" '.$bc[$var].'>';
 print '<td>'.$form->textwithpicto($langs->trans("BIRDDY_ORIGINS_ALLOWED"), $langs->trans("BIRDDY_ORIGINS_ALLOWED_help_info")).'</td>';
 print '<td align="center" width="20">&nbsp;</td>';
 print '<td align="right" width="300">';
@@ -263,6 +271,11 @@ print '</td></tr>';
 
 
 print '</table>';
+
+if (empty($conf->global->BIRDDY_CHECK_ORIGIN))
+{
+	print '<script type="text/javascript"> $(function() { $("#check_origin").hide(); }); </script>';
+}
 
 llxFooter();
 

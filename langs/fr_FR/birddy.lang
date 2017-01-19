@@ -11,6 +11,7 @@ birddy_general_info_about_permissions=Attention aux permissions, vous trouverez 
 birddy_ServerParameters=Parametres serveur
 BIRDDY_SERVER_ADDR=Adresse serveur (défaut : localhost)
 BIRDDY_PORT=Port autorisé (défaut : 8000)
+BIRDDY_CHECK_ORIGIN=Activer le contrôle du nom de domaine
 BIRDDY_ORIGINS_ALLOWED=Précisez le/les noms de domaines autorisés
 BIRDDY_ORIGINS_ALLOWED_help_info=Renseignez les noms autorisés à se connecter séparé d'une "," (virgule)<br />&nbsp;&nbsp;- Si <b>Adresse serveur</b> et que <b>ce champ</b> sont vides, la valeur par défaut est : http://127.0.0.1,http://localhost<br />&nbsp;&nbsp;- Si <b>Adresse serveur</b> est renseigné mais pas celui-ci alors la valeur par défaut est celle de <b>Adresse serveur</b><br /><br />Example : l'url de votre Dolibarr est <b>http://mondomaine.fr/htdocs</b> alors renseignez <b>http://mondomaine.fr</b>
 birddy_Start_daemon=Démarrer le serveur

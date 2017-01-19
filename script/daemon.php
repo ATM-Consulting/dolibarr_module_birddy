@@ -30,6 +30,7 @@ require '../config.php';
 
 $address = !empty($conf->global->BIRDDY_SERVER_ADDR) ? $conf->global->BIRDDY_SERVER_ADDR : '127.0.0.1';
 $port = !empty($conf->global->BIRDDY_PORT) ? $conf->global->BIRDDY_PORT : '8000';
+$checkOrigin = (bool) $conf->global->BIRDDY_CHECK_ORIGIN;
 $TOrigin = !empty($conf->global->BIRDDY_ORIGINS_ALLOWED) ? explode(',', $conf->global->BIRDDY_ORIGINS_ALLOWED) : '';
 
 if (empty($address) || empty($port))
@@ -57,11 +58,15 @@ $server = new \WebSocket\Server($address, $port, false);
 
 // TODO server settings: mettre les valeurs en conf
 $server->setMaxClients(100);
-$server->setCheckOrigin(true);
-foreach ($TOrigin as $origin)
+$server->setCheckOrigin($checkOrigin);
+if ($checkOrigin)
 {
-	if (!empty($origin)) $server->setAllowedOrigin($origin);
+	foreach ($TOrigin as $origin)
+	{
+		if (!empty($origin)) $server->setAllowedOrigin($origin);
+	}	
 }
+
 $server->setMaxConnectionsPerIp(100);
 $server->setMaxRequestsPerMinute(2000);
 
