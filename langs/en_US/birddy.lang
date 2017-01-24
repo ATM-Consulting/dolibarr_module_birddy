@@ -44,6 +44,7 @@ birddy_restart_server=Daemon restarted successfully
 birddy_error_start_daemon=Error: can't start daemon. Already running or check read and write permissions of "www-data" user on "birddy/script/run" and "birddy/script/log" folders
 birddy_error_stop_daemon=Error: can't stop daemon or already stopped
 birddy_error_restart_daemon=Error: can't restart daemon
+birddy_warning_server_not_running=No PID in the database the server seems to be already stopped
 
 # SYSTEM INFO
 birddy_UNEXPECTED_ERROR=Unexpected error

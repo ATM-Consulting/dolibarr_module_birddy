@@ -75,7 +75,7 @@ if (preg_match('/del_(.*)/',$action,$reg))
 	}
 }
 
-if (in_array($action, array('start_daemon', 'stop_daemon', 'restart_daemon')))
+if (in_array($action, array('start_daemon', 'stop_daemon')))
 {
 	$output = array();
 	$return_var = 0;
@@ -85,14 +85,31 @@ if (in_array($action, array('start_daemon', 'stop_daemon', 'restart_daemon')))
 
 	switch ($action) {
 		case 'start_daemon':
-			exec('sh '.dol_buildpath('/birddy/script/launcher.sh').' start '.$dir, $output, $return_var);
+			// Old method
+//			exec('sh '.dol_buildpath('/birddy/script/launcher.sh').' start '.$dir, $output, $return_var);
+			
+			exec('php '.dol_buildpath('/birddy/script/daemon.php').' > '.$dolibarr_main_data_root.'/birddy/log/birddydaemon.log 2>&1 &', $output, $return_var);
+			
 			break;
 		case 'stop_daemon':
-			exec('sh '.dol_buildpath('/birddy/script/launcher.sh').' stop '.$dir, $output, $return_var);
+			// Old method
+//			exec('sh '.dol_buildpath('/birddy/script/launcher.sh').' stop '.$dir, $output, $return_var);
+			
+			if (empty($conf->global->BIRDDY_PID_SERVER))
+			{
+				$output = array('birddy_warning_server_not_running');
+				$return_var = 0;
+			}
+			else
+			{
+				exec('kill -9 '.$conf->global->BIRDDY_PID_SERVER, $output, $return_var);
+				if ($return_var == 0) dolibarr_del_const($db, 'BIRDDY_PID_SERVER');
+			}
+			
 			break;
-		case 'restart_daemon':
-			exec('sh '.dol_buildpath('/birddy/script/launcher.sh').' restart '.$dir, $output, $return_var);
-			break;
+//		case 'restart_daemon':
+//			exec('sh '.dol_buildpath('/birddy/script/launcher.sh').' restart '.$dir, $output, $return_var);
+//			break;
 		default:
 			$return_var = -1;
 			break;
@@ -207,9 +224,9 @@ print '<div class="inline-block divButAction">';
 print '<a href="'.dol_buildpath('/birddy/admin/birddy_setup.php', 1).'?action=stop_daemon" class="butActionDelete">'.$langs->trans("birddy_Stop_daemon").'</a>';
 print '</div>';
 
-print '<div class="inline-block divButAction">';
-print '<a href="'.dol_buildpath('/birddy/admin/birddy_setup.php', 1).'?action=restart_daemon" class="butActionDelete">'.$langs->trans("birddy_Restart_daemon").'</a>';
-print '</div>';
+//print '<div class="inline-block divButAction">';
+//print '<a href="'.dol_buildpath('/birddy/admin/birddy_setup.php', 1).'?action=restart_daemon" class="butActionDelete">'.$langs->trans("birddy_Restart_daemon").'</a>';
+//print '</div>';
 
 print '</div>';
 

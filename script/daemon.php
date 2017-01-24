@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /* <one line to give the program's name and a brief idea of what it does.>
  * Copyright (C) 2016 ATM Consulting <support@atm-consulting.fr>
@@ -17,6 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+set_time_limit(0);
+
 if (isset($_GET['DEBUG']))
 {
 	ini_set('display_errors', 1);
@@ -27,6 +30,11 @@ chdir(__DIR__);
 
 DEFINE('INC_FROM_CRON_SCRIPT', true);
 require '../config.php';
+
+require_once DOL_DOCUMENT_ROOT . '/core/lib/functions.lib.php';
+require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
+
+dolibarr_set_const($db, 'BIRDDY_PID_SERVER', dol_getmypid());
 
 $address = !empty($conf->global->BIRDDY_SERVER_ADDR) ? $conf->global->BIRDDY_SERVER_ADDR : '127.0.0.1';
 $port = !empty($conf->global->BIRDDY_PORT) ? $conf->global->BIRDDY_PORT : '8000';
