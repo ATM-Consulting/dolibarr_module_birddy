@@ -41,10 +41,8 @@ birddy_close_tab=Fermer l'onglet
 birddy_start_server=Serveur démarré
 birddy_stop_server=Serveur arrêté
 birddy_restart_server=Serveur redémarrer
-birddy_error_start_daemon=Erreur: impossible de démarrer le serveur. Le serveur est déjà démarré ou vérifiez les permissions de lecture et d'écriture des dossiers "birddy/script/run" and "birddy/script/log" pour l'utilisateur "www-data"
-birddy_error_stop_daemon=Erreur: impossible d'arrêter le serveur ou serveur déjà arrêté
-birddy_error_restart_daemon=Erreur: impossible de redémarrer le serveur
-birddy_warning_server_not_running=Aucun PID en base de données, le serveur semble déjà arrêté
+birddy_warning_server_not_running=Serveur déjà arrêté
+birddy_warning_server_already_running=Serveur déjà démarré
 
 # SYSTEM INFO
 birddy_UNEXPECTED_ERROR=Erreur inattendue

@@ -34,8 +34,20 @@ require '../config.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/functions.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
 
-dolibarr_set_const($db, 'BIRDDY_PID_SERVER', dol_getmypid());
+$conf->entity = $argv[1];
 
+$pidfile_path = $conf->birddy->multidir_output[$conf->entity] . '/run/birddydaemon.pid';
+$handler = fopen($pidfile_path, 'w');
+if (!$handler)
+{
+	echo 'ERROR: Can not write file "'.$pidfile_path.'"';
+	exit;
+}
+
+fwrite($handler, dol_getmypid());
+fclose($handler);
+
+// TODO reload $conf with the right entity ($argv[1])
 $address = !empty($conf->global->BIRDDY_SERVER_ADDR) ? $conf->global->BIRDDY_SERVER_ADDR : '127.0.0.1';
 $port = !empty($conf->global->BIRDDY_PORT) ? $conf->global->BIRDDY_PORT : '8000';
 $checkOrigin = (bool) $conf->global->BIRDDY_CHECK_ORIGIN;
@@ -62,7 +74,8 @@ $classLoader->register();
 
 dol_include_once('/birddy/class/birddy.class.php');
 
-$server = new \WebSocket\Server($address, $port, false);
+//$server = new \WebSocket\Server($address, $port, false);
+$server = new BirddyServer($pidfile_path, $address, $port, false);
 
 // TODO server settings: mettre les valeurs en conf
 $server->setMaxClients(100);

@@ -88,24 +88,41 @@ if (in_array($action, array('start_daemon', 'stop_daemon')))
 			// Old method
 //			exec('sh '.dol_buildpath('/birddy/script/launcher.sh').' start '.$dir, $output, $return_var);
 			
-			exec('php '.dol_buildpath('/birddy/script/daemon.php').' > '.$dolibarr_main_data_root.'/birddy/log/birddydaemon.log 2>&1 &', $output, $return_var);
-			
+			$file = $conf->birddy->multidir_output[$conf->entity] . '/run/birddydaemon.pid';
+			if (!is_file($file))
+			{
+				exec('php '.dol_buildpath('/birddy/script/daemon.php').' '. (int) $conf->entity.' > '.$conf->birddy->multidir_output[$conf->entity] . '/log/birddydaemon.log  2>&1 &', $output, $return_var);
+				if ($return_var == 0) $output = array('birddy_start_server');
+			}
+			else
+			{
+				$output = array('birddy_warning_server_already_running');
+				$return_var = -1;
+			}
 			break;
 		case 'stop_daemon':
 			// Old method
 //			exec('sh '.dol_buildpath('/birddy/script/launcher.sh').' stop '.$dir, $output, $return_var);
 			
-			if (empty($conf->global->BIRDDY_PID_SERVER))
+			$file = $conf->birddy->multidir_output[$conf->entity] . '/run/birddydaemon.pid';
+			if (!file_exists($file))
 			{
 				$output = array('birddy_warning_server_not_running');
-				$return_var = 0;
+				$return_var = -1;
 			}
 			else
 			{
-				exec('kill -9 '.$conf->global->BIRDDY_PID_SERVER, $output, $return_var);
-				if ($return_var == 0) dolibarr_del_const($db, 'BIRDDY_PID_SERVER');
-			}
-			
+				if (unlink($file))
+				{
+					$output = array('birddy_stop_server');
+					$return_var = 0;
+				}
+				else
+				{
+					$output = array('birddy_error_stop_daemon');
+					$return_var = 1;
+				}
+			}			
 			break;
 //		case 'restart_daemon':
 //			exec('sh '.dol_buildpath('/birddy/script/launcher.sh').' restart '.$dir, $output, $return_var);
@@ -115,13 +132,13 @@ if (in_array($action, array('start_daemon', 'stop_daemon')))
 			break;
 	}
 
-	if (!empty($output) && $return_var == 0)
+	if (!empty($output))
 	{
-		setEventMessages('', $output);
-	}
-	elseif ($return_var > 0)
-	{
-		setEventMessages('birddy_error_'.$action, array(), 'errors');
+		$type = 'mesgs';
+		if ($return_var == 1) $type = 'errors';
+		elseif ($return_var == -1) $type = 'warnings';
+		
+		setEventMessages('', $output, $type);
 	}
 
 	header('Location: '.dol_buildpath('/birddy/admin/birddy_setup.php', 2));

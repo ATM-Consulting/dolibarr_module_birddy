@@ -263,3 +263,222 @@ class Birddy extends \WebSocket\Application\Application
 	}
 
 }
+
+class BirddyServer extends \WebSocket\Server
+{
+	protected $clients = array();
+	protected $applications = array();
+	private $_ipStorage = array();
+	private $_requestStorage = array();
+	
+	// server settings:
+	private $_checkOrigin = true;
+	private $_allowedOrigins = array();
+	private $_maxClients = 30;
+	private $_maxConnectionsPerIp = 5;
+	private $_maxRequestsPerMinute = 50;
+	
+	public $pidfile_path;
+	
+	public function __construct($pidfile_path, $host = 'localhost', $port = 8000, $ssl = false)
+	{
+		$this->pidfile_path = $pidfile_path;
+		
+		parent::__construct($host, $port, $ssl);
+	}
+	
+	private function _exit()
+	{
+		return !file_exists($this->pidfile_path);
+	}
+	
+	/**
+     * Creates a connection from a socket resource
+     *
+     * @param resource $resource A socket resource
+     * @return Connection
+     */
+    protected function createConnection($resource)
+    {
+		return new \WebSocket\Connection($this, $resource);
+    }
+	
+	/**
+	 * Main server method. Listens for connections, handles connectes/disconnectes, e.g.
+	 */
+	public function run()
+	{
+		while(true)
+		{
+			if ($this->_exit()) break;
+			
+			$changed_sockets = $this->allsockets;
+			@stream_select($changed_sockets, $write = null, $except = null, 0, 5000);
+			foreach($changed_sockets as $socket)
+			{
+				if($socket == $this->master)
+				{
+					if(($ressource = stream_socket_accept($this->master)) === false)
+					{
+						$this->log('Socket error: ' . socket_strerror(socket_last_error($ressource)));
+						continue;
+					}
+					else
+					{
+						$client = $this->createConnection($ressource);
+						$this->clients[(int)$ressource] = $client;
+						$this->allsockets[] = $ressource;
+
+						if(count($this->clients) > $this->_maxClients)
+						{
+							$client->onDisconnect();
+							if($this->getApplication('status') !== false)
+							{
+								$this->getApplication('status')->statusMsg('Attention: Client Limit Reached!', 'warning');
+							}
+							continue;
+						}
+						
+						$this->_addIpToStorage($client->getClientIp());
+						if($this->_checkMaxConnectionsPerIp($client->getClientIp()) === false)
+						{
+							$client->onDisconnect();
+							if($this->getApplication('status') !== false)
+							{
+								$this->getApplication('status')->statusMsg('Connection/Ip limit for ip ' . $client->getClientIp() . ' was reached!', 'warning');
+							}
+							continue;
+						}
+					}
+				}
+				else
+				{
+					$client = $this->clients[(int)$socket];
+					if(!is_object($client))
+					{
+						unset($this->clients[(int)$socket]);
+						continue;
+					}
+					$data = $this->readBuffer($socket);
+					$bytes = strlen($data);
+					
+					if($bytes === 0)
+					{
+						$client->onDisconnect();
+						continue;
+					}
+					elseif($data === false)
+					{
+						$this->removeClientOnError($client);
+						continue;
+					}
+					elseif($client->waitingForData === false && $this->_checkRequestLimit($client->getClientId()) === false)
+					{
+						$client->onDisconnect();
+					}
+					else
+					{
+						$client->onData($data);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Adds a new ip to ip storage.
+	 * 
+	 * @param string $ip An ip address.
+	 */
+	private function _addIpToStorage($ip)
+	{
+		if(isset($this->_ipStorage[$ip]))
+		{
+			$this->_ipStorage[$ip]++;
+		}
+		else
+		{
+			$this->_ipStorage[$ip] = 1;
+		}
+	}
+	
+	/**
+	 * Removes an ip from ip storage.
+	 * 
+	 * @param string $ip An ip address.
+	 * @return bool True if ip could be removed. 
+	 */
+	private function _removeIpFromStorage($ip)
+	{
+		if(!isset($this->_ipStorage[$ip]))
+		{
+			return false;
+		}
+		if($this->_ipStorage[$ip] === 1)
+		{
+			unset($this->_ipStorage[$ip]);
+			return true;
+		}
+		$this->_ipStorage[$ip]--;
+		
+		return true;
+	}
+	
+	/**
+	 * Checks if an ip has reached the maximum connection limit.
+	 * 
+	 * @param string $ip An ip address.
+	 * @return bool False if ip has reached max. connection limit. True if connection is allowed. 
+	 */
+	private function _checkMaxConnectionsPerIp($ip)
+	{
+		if(empty($ip))
+		{
+			return false;
+		}
+		if(!isset ($this->_ipStorage[$ip]))
+		{
+			return true;
+		}
+		return ($this->_ipStorage[$ip] > $this->_maxConnectionsPerIp) ? false : true;
+	}
+	
+	/**
+	 * Checkes if a client has reached its max. requests per minute limit.
+	 * 
+	 * @param string $clientId A client id. (unique client identifier)
+	 * @return bool True if limit is not yet reached. False if request limit is reached. 
+	 */
+	private function _checkRequestLimit($clientId)
+	{
+		// no data in storage - no danger:
+		if(!isset($this->_requestStorage[$clientId]))
+		{
+			$this->_requestStorage[$clientId] = array(
+				'lastRequest' => time(),
+				'totalRequests' => 1
+			);
+			return true;
+		}
+		
+		// time since last request > 1min - no danger:
+		if(time() - $this->_requestStorage[$clientId]['lastRequest'] > 60)
+		{
+			$this->_requestStorage[$clientId] = array(
+				'lastRequest' => time(),
+				'totalRequests' => 1
+			);
+			return true;
+		}
+		
+		// did requests in last minute - check limits:
+		if($this->_requestStorage[$clientId]['totalRequests'] > $this->_maxRequestsPerMinute)
+		{
+			return false;
+		}
+		
+		$this->_requestStorage[$clientId]['totalRequests']++;
+		return true;
+	}
+	
+}
