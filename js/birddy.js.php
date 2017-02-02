@@ -56,21 +56,21 @@ $(function() {
 		birddyServerUrl = 'ws://<?php echo $address.':'.$port; ?>/birddy';
 		
 		try {
-			if (window.MozWebSocket) {
-				birddySocket = new MozWebSocket(birddyServerUrl);
-			} else if (window.WebSocket) {
-				birddySocket = new WebSocket(birddyServerUrl);
-			}
+			birddySocket = new ReconnectingWebSocket(birddyServerUrl, null, {reconnectInterval: 3000});
 		} catch (error) {
 			console.log(error);
 			return;
 		}
 		
-		birddySocket.binaryType = 'blob';
+		//birddySocket.binaryType = 'blob';
 		
 		birddySocket.onopen = function(event) {
 			return $('#birddystatus').removeClass('offline').addClass('online').attr('title', 'connected');
 		};
+		
+		birddySocket.onerror = function(event){
+			console.log(event);
+		}
 		
 		birddySocket.onmessage = function(event) {
 			var data = JSON.parse(event.data);

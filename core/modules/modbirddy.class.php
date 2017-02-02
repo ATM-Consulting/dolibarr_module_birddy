@@ -90,7 +90,7 @@ class modbirddy extends DolibarrModules
 		//                        );
 		$this->module_parts = array(
 			'css' => array('/birddy/css/birddy.css', '/birddy/css/font-awesome.min.css')
-			,'js' => array('/birddy/js/birddy.js.php')
+			,'js' => array('/birddy/js/ws.js', '/birddy/js/birddy.js.php')
 		);
 
 		// Data directories to create when module is enabled.
