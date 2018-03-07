@@ -262,7 +262,7 @@ if (file_exists($conf->birddy->multidir_output[$conf->entity] . '/run/birddydaem
 					var tablist = $('#birddy-tab-list')
 						,shortName = username;
 					if (shortName.length > 8) shortName = shortName.substring(0, 8)+'...';
-					var li = $('<li id="birddytab-'+fk_user+'" data-fk-user="'+fk_user+'" class="birddytab" title="'+username+'">'+shortName+' <i class="birddy-close-tab fa fa-times" data-fk-user="'+fk_user+'" title="<?php echo $langs->trans('birddy_close_tab'); ?>"></i></li>');
+					var li = $('<li id="birddytab-'+fk_user+'" data-fk-user="'+fk_user+'" class="birddytab" title="'+username+'">'+shortName+' <i class="birddy-close-tab fa fa-times" data-fk-user="'+fk_user+'" title="<?php echo addslashes($langs->trans('birddy_close_tab')); ?>"></i></li>');
 					var log = $('<div id="birddylog-'+fk_user+'" data-fk-user="'+fk_user+'" class="birddylog"></div>');
 
 					tablist.append(li);
