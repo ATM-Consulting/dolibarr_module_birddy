@@ -57,7 +57,7 @@ if (file_exists($conf->birddy->multidir_output[$conf->entity] . '/run/birddydaem
 			birddyServerUrl = 'ws://<?php echo $address.':'.$port; ?>/birddy';
 
 			try {
-				birddySocket = new ReconnectingWebSocket(birddyServerUrl, null, {<?php if (GETPOST('DEBUG')) { echo 'debug: true,'; } ?>reconnectInterval: 3000});
+				birddySocket = new ReconnectingWebSocket(birddyServerUrl, null, {<?php if (GETPOST('DEBUG','alpha')) { echo 'debug: true,'; } ?>reconnectInterval: 3000});
 			} catch (error) {
 				console.log(error);
 				return;
@@ -142,7 +142,7 @@ if (file_exists($conf->birddy->multidir_output[$conf->entity] . '/run/birddydaem
 			}
 
 			function openOrCloseListUser(callback) {
-				var box = $("#birddytabuser-container"); 
+				var box = $("#birddytabuser-container");
 
 				if (box.hasClass("open"))
 				{
@@ -321,7 +321,7 @@ if (file_exists($conf->birddy->multidir_output[$conf->entity] . '/run/birddydaem
 					tab.data('currently-moving', 1);
 
 					var move;
-					if (direction == 'right') { 
+					if (direction == 'right') {
 						move = '+=50';
 						tab.data('current-pos', --pos)
 					} else {
@@ -336,7 +336,7 @@ if (file_exists($conf->birddy->multidir_output[$conf->entity] . '/run/birddydaem
 						if (pos >= nb_element - nb_element_visible_at_start) $('#birddychat .birddy-move-tab.direction-right').fadeOut(200);
 						else $('#birddychat .birddy-move-tab.direction-right').fadeIn(200);
 
-						tab.data('currently-moving', 0); 
+						tab.data('currently-moving', 0);
 					});
 				}
 
