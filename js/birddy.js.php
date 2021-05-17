@@ -18,6 +18,7 @@
  */
 
 //DEFINE('INC_FROM_DOLIBARR', true);
+if (!defined('NOTOKENRENEWAL')) define('NOTOKENRENEWAL', '1'); // Disable token renewal
 require '../config.php';
 
 if (file_exists($conf->birddy->multidir_output[$conf->entity] . '/run/birddydaemon.pid'))
