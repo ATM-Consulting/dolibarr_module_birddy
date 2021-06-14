@@ -16,46 +16,48 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
+if (!defined('NOTOKENRENEWAL')) define('NOTOKENRENEWAL', 1);
+
  require '../config.php';
  dol_include_once('/core/lib/functions.lib.php');
  $langs->load('birddy@birddy');
 
  ?>
- 
+
 <div id="birddychat">
 	<input id="birddyconnectionid" type="hidden" value="" />
 	<input id="birddyclientid" type="hidden" value="" />
-	
+
 	<i id="birddyshowclients" class=" fa fa-user-plus" aria-hidden="true" title="<?php echo $langs->transnoentitiesnoconv('birddy_show_users'); ?>"></i>
 	<i id="birddy-reduce-window" class="fa fa-minus-square-o" aria-hidden="true"></i>
 
-	
+
 	<i id="birddystatus" class="offline fa fa-circle" aria-hidden="true"></i>
 
-	
-	
+
+
 	<div id="birddy-tab">
 		<i data-direction="right" class="birddy-move-tab direction-left fa fa-chevron-left" aria-hidden="true"></i>
 		<i data-direction="left" class="birddy-move-tab direction-right fa fa-chevron-right" aria-hidden="true"></i>
-		
+
 		<ul style='' id="birddy-tab-list" data-currently-moving="0" data-current-pos="0" data-nb-element="0">
 		</ul>
-		
+
 		<div id="birddy-tab-container">
-		</div>	
+		</div>
 	</div>
-	
-	
+
+
     <!-- <div id="birddylog"></div> -->
-    
-	
+
+
 	<div id="birddyactionbar">
 	    <input id="birddydata" placeholder="text..." type="text" class="lightblue" />
 	    <!-- <input id="birddysend" type="button" value="Send" /> -->
 	</div>
-	
-	
+
+
 	<!--
 	<h2>Send Binary Frame</h2>
 	<form name="binaryFrame" action="#">
@@ -69,4 +71,3 @@
 	<i id="birddytabuser-logo" class="fa fa-users" aria-hidden="true" title="<?php echo $langs->transnoentitiesnoconv('birddy_click_to_refresh'); ?>"></i>
 	<ul id="birddytabuser"></ul>
 </div>
-	
